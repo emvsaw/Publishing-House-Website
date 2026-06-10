@@ -1,0 +1,627 @@
+---
+import AuthorLandingLayout from '../../layouts/AuthorLandingLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allAuthors = await getCollection('authors');
+const allBooks = await getCollection('books');
+
+const author = allAuthors.find(a => a.data.slug === 'kate-thomas')!.data;
+const books = allBooks
+  .filter(b => b.data.authorSlug === 'kate-thomas')
+  .sort((a, b) => new Date(b.data.releaseDate).getTime() - new Date(a.data.releaseDate).getTime());
+
+const latestReleases = books.slice(0, 2);
+const remainingBooks = books.slice(2);
+const social = author.socialLinks ?? {};
+---
+
+<AuthorLandingLayout title={`${author.name} | Thriller Author`} description={`Books by ${author.name}. Dark secrets. Twisting plots. Endings you never see coming.`} authorName={author.name}>
+
+  <!-- HERO: 3D Book Covers + Opt-in -->
+  <section class="al-hero">
+    <div class="container">
+
+      <!-- Book Carousel -->
+      <div class="al-book-showcase" id="books">
+        <div class="al-carousel-wrap">
+          <button class="al-carousel-arrow al-carousel-arrow--left" id="carouselPrev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <div class="al-carousel" id="bookCarousel">
+            {books.map(book => (
+              <a href={book.data.buyLinks?.amazon ?? 'https://www.amazon.com'} class="al-carousel-item" target="_blank" rel="noopener">
+                <img src={book.data.cover} alt={book.data.title} loading="lazy" />
+              </a>
+            ))}
+          </div>
+          <button class="al-carousel-arrow al-carousel-arrow--right" id="carouselNext" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Opt-in -->
+      <div class="al-optin" id="newsletter">
+        <div class="al-optin-text">
+          <h2><mark class="kt-highlight">Get a Free Book from {author.name}</mark></h2>
+          <p>Join the mailing list for exclusive content, new release alerts, and a free thriller.</p>
+        </div>
+        <div class="al-optin-form-wrap">
+          <form class="al-optin-form" data-action={author.newsletterFormAction ?? '#'}>
+            <input type="text" name="fields[name]" placeholder="First name" autocomplete="given-name" />
+            <input type="email" name="fields[email]" placeholder="Email" autocomplete="email" required />
+            <button type="submit" class="btn al-btn-dark" style="white-space:nowrap;">Subscribe</button>
+          </form>
+          <p class="al-optin-success" style="display:none;">Thank you! Check your inbox.</p>
+          <p class="al-optin-privacy">Your information is safe. Unsubscribe anytime.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- About -->
+  <section class="al-section al-section-light" id="about">
+    <div class="container">
+      <div class="author-hero">
+        <img src={author.photo} alt={author.name} class="photo" loading="lazy" />
+        <div class="bio-box">
+          <h2>{author.name}</h2>
+          <div class="genre-list">
+            {author.genres.map(g => <span class="tag">{g}</span>)}
+          </div>
+          <p class="bio-text">{author.bio}</p>
+          <div class="social-links">
+            {social.instagram && <a href={social.instagram} target="_blank" rel="noopener">Instagram</a>}
+            {social.tiktok && <a href={social.tiktok} target="_blank" rel="noopener">TikTok</a>}
+            {social.facebook && <a href={social.facebook} target="_blank" rel="noopener">Facebook</a>}
+            {social.goodreads && <a href={social.goodreads} target="_blank" rel="noopener">Goodreads</a>}
+            {social.amazon && <a href={social.amazon} target="_blank" rel="noopener">Amazon</a>}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Latest Releases -->
+  {latestReleases.length > 0 && (
+    <section class="al-section al-latest-releases">
+      <div class="container">
+        <div class="section-title" style="text-align:left;">
+          <span>Latest Releases</span>
+        </div>
+        <div class="al-releases-grid">
+          {latestReleases.map(book => (
+            <div class="al-release-card">
+              <div class="cover-wrap">
+                <img src={book.data.cover} alt={book.data.title} loading="lazy" />
+              </div>
+              <div class="release-info">
+                <h3><mark>{book.data.title}</mark></h3>
+                <p class="blurb">{book.data.blurb}</p>
+                <div class="kt-buy-btns">
+                  {book.data.buyLinks?.amazon && (
+                    <a href={book.data.buyLinks.amazon} class="btn btn-primary" target="_blank" rel="noopener">
+                      Buy on Amazon
+                    </a>
+                  )}
+                  <a href="https://www.Kobo-Link-Here.com" class="btn btn-outline" target="_blank" rel="noopener">
+                    Read on Kobo
+                  </a>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Coming Soon -->
+  {author.comingSoon && (
+    <section class="al-preorder-banner" style={`background-image: url(${author.comingSoon.cover});`}>
+      <div class="al-preorder-overlay"></div>
+      <div class="al-preorder-overlay"></div>
+      <div class="al-preorder-content">
+        <span class="al-preorder-label">Coming Soon</span>
+        <h2 class="al-preorder-title">{author.comingSoon.title}</h2>
+        <p class="al-preorder-blurb">{author.comingSoon.blurb}</p>
+        {author.comingSoon.preorderLink && (
+          <a href={author.comingSoon.preorderLink} class="al-preorder-btn" target="_blank" rel="noopener">
+            Pre-Order Now
+          </a>
+        )}
+      </div>
+    </section>
+  )}
+
+  <!-- All Books -->
+  {remainingBooks.length > 0 && (
+    <section class="al-section" id="all-books">
+      <div class="container">
+        <div class="section-title" style="text-align:left;">
+          <span>All Books</span>
+          <h2>By {author.name}</h2>
+        </div>
+        <div class="book-grid">
+          {remainingBooks.map(book => (
+            <div class="card book-card">
+              <div class="cover-wrap">
+                <img src={book.data.cover} alt={book.data.title} loading="lazy" />
+              </div>
+              <div class="info">
+                <h4>{book.data.title}</h4>
+                <div class="kt-tags-row">
+                  {book.data.tags ? book.data.tags.map(t => <span class="tag genre-tag">{t}</span>) : <span class="tag genre-tag">{book.data.genre}</span>}
+                </div>
+                <p class="book-card-blurb">
+                  {book.data.blurb}
+                </p>
+                <div class="kt-buy-btns book-card-btn">
+                  {book.data.buyLinks?.amazon && (
+                    <a href={book.data.buyLinks.amazon} class="btn btn-outline" target="_blank" rel="noopener">
+                      Read on Amazon
+                    </a>
+                  )}
+                  <a href="https://www.Kobo-Link-Here.com" class="btn btn-outline" target="_blank" rel="noopener">
+                    Read on Kobo
+                  </a>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Bottom Newsletter -->
+  <section class="al-section al-section-light al-bottom-newsletter">
+    <div class="container">
+      <h2 class="al-bottom-nl-heading">Never Miss a New Release</h2>
+      <p class="al-bottom-nl-desc">Join {author.name}'s mailing list for exclusive content, early cover reveals, and new release alerts delivered straight to your inbox.</p>
+      <form class="al-bottom-nl-form" data-action={author.newsletterFormAction ?? '#'}>
+        <input type="text" name="fields[name]" placeholder="Your first name" autocomplete="given-name" />
+        <input type="email" name="fields[email]" placeholder="Your email address" autocomplete="email" required />
+        <button type="submit" class="btn btn-primary" style="white-space:nowrap;">Subscribe</button>
+      </form>
+      <p class="al-bottom-nl-success" style="display:none;">Thank you! Check your inbox.</p>
+      <p class="al-bottom-nl-privacy">Your information is safe. Unsubscribe anytime.</p>
+    </div>
+  </section>
+
+</AuthorLandingLayout>
+
+<style>
+  /* Profile photo */
+  .author-hero .photo {
+    border: none;
+    border-radius: 8px;
+  }
+
+  /* Scroll-to-top orange */
+  :global(.al-scroll-top) {
+    background: #C65D2C !important;
+    border-color: #C65D2C !important;
+    color: #ffffff !important;
+  }
+  :global(.al-scroll-top):hover {
+    background: #A84D24 !important;
+    border-color: #A84D24 !important;
+    color: #ffffff !important;
+  }
+
+  /* Orange highlighter for opt-in heading */
+  :global(.kt-highlight) {
+    background: linear-gradient(to top, rgba(198, 93, 44, 0.35) 40%, transparent 40%);
+    color: inherit;
+    padding: 0 4px;
+  }
+
+  /* Tags row (inline) */
+  :global(.kt-tags-row) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+  }
+
+  /* Buy button groups (Amazon + Kobo stacked) */
+  :global(.kt-buy-btns) {
+    display: flex;
+    flex-direction: column;
+    gap: 0 !important;
+  }
+
+  :global(.kt-buy-btns) .btn + .btn {
+    margin-top: 0.75rem !important;
+  }
+
+  :global(.al-section .kt-buy-btns) .btn,
+  :global(.al-section .kt-buy-btns) .btn.btn-outline,
+  :global(.al-section .kt-buy-btns) .btn.btn-primary {
+    text-align: center;
+    display: block;
+    width: 100%;
+    max-width: 200px;
+    padding: 0.65rem 1rem;
+    font-size: 0.875rem;
+    background: #1a1a1a !important;
+    color: #ffffff !important;
+    border: 2px solid #1a1a1a !important;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+  }
+
+  :global(.al-section .kt-buy-btns) .btn:hover,
+  :global(.al-section .kt-buy-btns) .btn.btn-outline:hover,
+  :global(.al-section .kt-buy-btns) .btn.btn-primary:hover {
+    background: #ffffff !important;
+    color: #1a1a1a !important;
+    border-color: #1a1a1a !important;
+  }
+
+  /* Override purple accent with teal for non-optin elements */
+  :global(.al-section) .btn-primary {
+    background: #C65D2C;
+    color: #ffffff;
+  }
+  :global(.al-section) .btn-primary:hover {
+    background: #ffffff;
+    color: #C65D2C;
+    border: 1px solid #C65D2C;
+  }
+
+  :global(.al-section) .btn-outline {
+    border-color: #C65D2C;
+    color: #C65D2C;
+  }
+  :global(.al-section) .btn-outline:hover {
+    background: #C65D2C;
+    color: #ffffff;
+  }
+
+  :global(.al-section) .tag:hover,
+  :global(.al-section) .tag.active {
+    background: #C65D2C;
+    border-color: #C65D2C;
+    color: #ffffff;
+  }
+
+  :global(.al-section) .section-title span {
+    color: #C65D2C;
+  }
+
+  :global(.al-section) a {
+    color: #C65D2C;
+  }
+  :global(.al-section) a:hover {
+    color: #A84D24;
+  }
+
+  /* Pre-order Banner */
+  :global(.al-preorder-banner) {
+    position: relative;
+    background-size: cover;
+    background-position: center top;
+    background-repeat: no-repeat;
+    min-height: 480px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  :global(.al-preorder-overlay) {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(10, 10, 10, 0.75) 0%,
+      rgba(10, 10, 10, 0.85) 50%,
+      rgba(10, 10, 10, 0.92) 100%
+    );
+    z-index: 1;
+  }
+
+  :global(.al-preorder-content) {
+    position: relative;
+    z-index: 2;
+    max-width: 640px;
+    padding: 3rem 1.5rem;
+  }
+
+  :global(.al-preorder-label) {
+    display: inline-block;
+    font-size: 1.625rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #C65D2C;
+    margin-bottom: 1rem;
+  }
+
+  :global(.al-preorder-title) {
+    font-family: 'Poppins', sans-serif;
+    font-size: 3rem;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.1;
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.02em;
+  }
+
+  :global(.al-preorder-blurb) {
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    color: #d0d0d0;
+    margin-bottom: 2rem;
+  }
+
+  :global(.al-preorder-btn) {
+    display: inline-block;
+    padding: 1rem 3rem;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #ffffff;
+    background: #C65D2C;
+    border: none;
+    border-radius: 4px;
+    transition: background 0.2s, transform 0.2s;
+  }
+
+  :global(.al-preorder-btn):hover {
+    background: #ffffff;
+    color: #C65D2C !important;
+    transform: translateY(-2px);
+  }
+
+  /* Bottom Newsletter */
+  :global(.al-bottom-newsletter) {
+    text-align: center;
+  }
+
+  :global(.al-bottom-nl-heading) {
+    color: var(--color-text);
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  :global(.al-bottom-nl-desc) {
+    color: var(--color-text-muted);
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    margin-bottom: var(--space-md);
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  :global(.al-bottom-nl-form) {
+    display: flex;
+    gap: var(--space-xs);
+    max-width: 640px;
+    margin: 0 auto;
+    flex-direction: row;
+  }
+
+  :global(.al-bottom-nl-form) input[type="text"],
+  :global(.al-bottom-nl-form) input[type="email"] {
+    padding: 0.75rem 1rem;
+    border: 1px solid #d6d0c4;
+    border-radius: 4px;
+    background: #ffffff;
+    color: var(--color-text);
+    font-size: 0.9375rem;
+    width: 100%;
+  }
+
+  :global(.al-bottom-nl-form) input::placeholder {
+    color: #999999;
+  }
+
+  :global(.al-bottom-nl-privacy) {
+    font-size: 0.75rem !important;
+    color: #999999 !important;
+    margin-top: var(--space-xs);
+    text-align: center;
+    margin-bottom: 0 !important;
+  }
+
+  @media (max-width: 768px) {
+    :global(.al-preorder-banner) {
+      min-height: 400px;
+    }
+    :global(.al-preorder-title) {
+      font-size: 2rem;
+    }
+    :global(.al-bottom-nl-form) {
+      flex-direction: column;
+    }
+  }
+
+  :global(.al-carousel-item):hover {
+    transform: scale(1.03);
+  }
+
+  /* Latest Releases 2-column grid */
+  :global(.al-releases-grid) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+  }
+
+  :global(.al-release-card) {
+    display: flex;
+    gap: 1.5rem;
+    align-items: stretch;
+  }
+
+  :global(.al-release-card) .cover-wrap {
+    flex: 0 0 160px;
+  }
+
+  :global(.al-release-card) .cover-wrap img {
+    width: 160px;
+    border-radius: 4px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  }
+
+  :global(.al-release-card) .release-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  :global(.al-release-card) .release-info h3 {
+    color: #1a1a1a;
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  :global(.al-release-card) .release-info h3 mark {
+    background: linear-gradient(to top, #C65D2C40 40%, transparent 40%);
+    color: inherit;
+    padding: 0 4px;
+  }
+
+  :global(.al-release-card) .release-info .blurb {
+    color: #444444;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    margin-bottom: 1.25rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  :global(.al-release-card) .release-info .btn {
+    margin-top: auto;
+    align-self: flex-start;
+  }
+
+  :global(.al-release-card) .release-info .kt-buy-btns {
+    margin-top: auto;
+  }
+
+  :global(.al-latest-releases) .section-title span {
+    position: relative;
+    display: inline-block;
+  }
+
+  :global(.al-latest-releases) .section-title span::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 2px;
+    width: 100%;
+    height: 8px;
+    background: #C65D2C40;
+    z-index: -1;
+  }
+
+  @media (max-width: 768px) {
+    :global(.al-releases-grid) {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    :global(.al-release-card) {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    :global(.al-release-card) .release-info .btn,
+    :global(.al-release-card) .release-info .kt-buy-btns {
+      align-self: center;
+    }
+    :global(.al-release-card) .release-info .kt-buy-btns .btn {
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+
+  @media (max-width: 480px) {
+    :global(.al-preorder-banner) {
+      min-height: 320px;
+    }
+    :global(.al-preorder-title) {
+      font-size: 1.75rem;
+    }
+    :global(.al-preorder-label) {
+      font-size: 1.25rem;
+    }
+    :global(.al-preorder-blurb) {
+      font-size: 0.9375rem;
+    }
+    :global(.al-preorder-btn) {
+      padding: 0.75rem 2rem;
+      font-size: 0.875rem;
+    }
+    :global(.al-preorder-content) {
+      padding: 2rem 1rem;
+    }
+    :global(.al-release-card) .cover-wrap {
+      flex: 0 0 130px;
+    }
+    :global(.al-release-card) .cover-wrap img {
+      width: 130px;
+    }
+    :global(.al-section .kt-buy-btns) .btn,
+    :global(.al-section .kt-buy-btns) .btn.btn-outline,
+    :global(.al-section .kt-buy-btns) .btn.btn-primary {
+      max-width: 100%;
+      font-size: 0.8125rem;
+    }
+  }
+</style>
+
+<script>
+  // Carousel navigation
+  const carousel = document.getElementById('bookCarousel');
+  const prevBtn = document.getElementById('carouselPrev');
+  const nextBtn = document.getElementById('carouselNext');
+
+  if (carousel && prevBtn && nextBtn) {
+    // Scroll by roughly 2 book widths per click
+    const getScrollAmount = () => {
+      const item = carousel.querySelector('.al-carousel-item') as HTMLElement;
+      if (!item) return 400;
+      const gap = parseFloat(getComputedStyle(carousel).gap) || 20;
+      return (item.offsetWidth + gap) * 2;
+    };
+
+    prevBtn.addEventListener('click', () => {
+      carousel.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
+    });
+    nextBtn.addEventListener('click', () => {
+      carousel.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
+    });
+  }
+
+  // Newsletter forms
+  function setupNlForm(formSelector: string, successSelector: string) {
+    const form = document.querySelector(formSelector) as HTMLFormElement;
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const action = form.dataset.action;
+      const formData = new FormData(form);
+      formData.append('ml-submit', '1');
+      formData.append('anticsrf', 'true');
+      try {
+        await fetch(action!, { method: 'POST', body: formData, mode: 'no-cors' });
+      } catch (_) {}
+      form.style.display = 'none';
+      document.querySelector(successSelector)!.setAttribute('style', 'display:block; color:#ffffff; font-weight:600; margin-top:var(--space-sm);');
+    });
+  }
+
+  setupNlForm('.al-optin-form', '.al-optin-success');
+  setupNlForm('.al-bottom-nl-form', '.al-bottom-nl-success');
+</script>

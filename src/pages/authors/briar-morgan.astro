@@ -1,0 +1,903 @@
+---
+import AuthorLandingLayout from '../../layouts/AuthorLandingLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allAuthors = await getCollection('authors');
+const allBooks = await getCollection('books');
+
+const author = allAuthors.find(a => a.data.slug === 'briar-morgan')!.data;
+const books = allBooks
+  .filter(b => b.data.authorSlug === 'briar-morgan')
+  .sort((a, b) => new Date(b.data.releaseDate).getTime() - new Date(a.data.releaseDate).getTime());
+
+const heroBooks = books.slice(0, 5); // top 5 for hero carousel
+const latestReleases = books.slice(0, 2);
+const remainingBooks = books.slice(2);
+const social = author.socialLinks ?? {};
+---
+
+<AuthorLandingLayout title={`${author.name} | Cozy Mystery Author`} description={`Books by ${author.name}. Small-town secrets. Charming sleuths. Mysteries best enjoyed with tea.`} authorName={author.name}>
+
+  <!-- HERO: Book Carousel -->
+  <section class="bm-hero" id="books">
+    <div class="bm-hero-carousel" id="bmHeroCarousel">
+      {heroBooks.map((book, i) => (
+        <div class={`bm-hero-slide ${i === 0 ? 'active' : ''}`} data-index={i}>
+          <div class="bm-hero-inner container">
+            <div class="bm-hero-text">
+              <h1 class="bm-hero-title">{book.data.title}</h1>
+              <p class="bm-hero-tagline">Small-town secrets. Charming sleuths. Cozy mysteries with a twist.</p>
+              <p class="bm-hero-blurb">{book.data.blurb}</p>
+              <a href={book.data.buyLinks?.amazon ?? 'https://www.amazon.com'} class="bm-hero-btn" target="_blank" rel="noopener">
+                Start Reading
+              </a>
+            </div>
+            <div class="bm-hero-cover">
+              <img src={book.data.cover} alt={book.data.title} />
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+    <!-- Arrows -->
+    <button class="bm-hero-arrow bm-hero-arrow--left" id="bmHeroPrev" aria-label="Previous">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <button class="bm-hero-arrow bm-hero-arrow--right" id="bmHeroNext" aria-label="Next">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <!-- Dots -->
+    <div class="bm-hero-dots">
+      {heroBooks.map((_, i) => (
+        <button class={`bm-hero-dot ${i === 0 ? 'active' : ''}`} data-dot={i} aria-label={`Slide ${i + 1}`}></button>
+      ))}
+    </div>
+  </section>
+
+  <!-- Opt-in -->
+  <div class="bm-optin-bar">
+    <div class="container">
+      <div class="al-optin" id="newsletter">
+        <div class="al-optin-text">
+          <h2><mark class="bm-highlight">Get a Free Book from {author.name}</mark></h2>
+          <p>Join the mailing list for exclusive content, new release alerts, and a free cozy mystery.</p>
+        </div>
+        <div class="al-optin-form-wrap">
+          <form class="al-optin-form" data-action={author.newsletterFormAction ?? '#'}>
+            <input type="text" name="fields[name]" placeholder="First name" autocomplete="given-name" />
+            <input type="email" name="fields[email]" placeholder="Email" autocomplete="email" required />
+            <button type="submit" class="btn al-btn-dark" style="white-space:nowrap;">Subscribe</button>
+          </form>
+          <p class="al-optin-success" style="display:none;">Thank you! Check your inbox.</p>
+          <p class="al-optin-privacy">Your information is safe. Unsubscribe anytime.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- About -->
+  <section class="al-section bm-section-lavender" id="about">
+    <div class="container">
+      <div class="author-hero">
+        <img src={author.photo} alt={author.name} class="photo" loading="lazy" />
+        <div class="bio-box">
+          <h2>{author.name}</h2>
+          <div class="genre-list">
+            {author.genres.map(g => <span class="tag">{g}</span>)}
+          </div>
+          <p class="bio-text">{author.bio}</p>
+          <div class="social-links">
+            {social.instagram && <a href={social.instagram} target="_blank" rel="noopener">Instagram</a>}
+            {social.tiktok && <a href={social.tiktok} target="_blank" rel="noopener">TikTok</a>}
+            {social.facebook && <a href={social.facebook} target="_blank" rel="noopener">Facebook</a>}
+            {social.goodreads && <a href={social.goodreads} target="_blank" rel="noopener">Goodreads</a>}
+            {social.amazon && <a href={social.amazon} target="_blank" rel="noopener">Amazon</a>}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Latest Releases -->
+  {latestReleases.length > 0 && (
+    <section class="al-section al-latest-releases">
+      <div class="container">
+        <div class="section-title" style="text-align:left;">
+          <span>Latest Releases</span>
+        </div>
+        <div class="al-releases-grid">
+          {latestReleases.map(book => (
+            <div class="al-release-card">
+              <div class="cover-wrap">
+                <img src={book.data.cover} alt={book.data.title} loading="lazy" />
+              </div>
+              <div class="release-info">
+                <h3><mark>{book.data.title}</mark></h3>
+                <p class="blurb">{book.data.blurb}</p>
+                {book.data.buyLinks?.amazon && (
+                  <a href={book.data.buyLinks.amazon} class="btn btn-primary" target="_blank" rel="noopener">
+                    Buy on Amazon
+                  </a>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Coming Soon -->
+  {author.comingSoon && (
+    <section class="al-preorder-banner" style={`background-image: url(${author.comingSoon.cover});`}>
+      <div class="al-preorder-overlay"></div>
+      <div class="al-preorder-inner container">
+        <div class="al-preorder-cover">
+          <img src={author.comingSoon.cover} alt={author.comingSoon.title} />
+        </div>
+        <div class="al-preorder-content">
+          <span class="al-preorder-label">Coming Soon</span>
+          <h2 class="al-preorder-title">{author.comingSoon.title}</h2>
+          <p class="al-preorder-blurb">{author.comingSoon.blurb}</p>
+          {author.comingSoon.preorderLink && (
+            <a href={author.comingSoon.preorderLink} class="al-preorder-btn" target="_blank" rel="noopener">
+              Pre-Order Now
+            </a>
+          )}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- All Books -->
+  {remainingBooks.length > 0 && (
+    <section class="al-section" id="all-books">
+      <div class="container">
+        <div class="section-title" style="text-align:left;">
+          <span>All Books</span>
+          <h2>By {author.name}</h2>
+        </div>
+        <div class="book-grid">
+          {remainingBooks.map(book => (
+            <div class="card book-card">
+              <div class="cover-wrap">
+                <img src={book.data.cover} alt={book.data.title} loading="lazy" />
+              </div>
+              <div class="info">
+                <h4>{book.data.title}</h4>
+                <span class="tag genre-tag">{book.data.genre}</span>
+                <p class="book-card-blurb">
+                  {book.data.blurb}
+                </p>
+                {book.data.buyLinks?.amazon && (
+                  <a href={book.data.buyLinks.amazon} class="btn btn-outline book-card-btn" target="_blank" rel="noopener">
+                    Read on Amazon
+                  </a>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Bottom Newsletter -->
+  <section class="al-section bm-section-lavender al-bottom-newsletter">
+    <div class="container">
+      <h2 class="al-bottom-nl-heading">Never Miss a New Release</h2>
+      <p class="al-bottom-nl-desc">Join {author.name}'s mailing list for exclusive content, early cover reveals, and new release alerts delivered straight to your inbox.</p>
+      <form class="al-bottom-nl-form" data-action={author.newsletterFormAction ?? '#'}>
+        <input type="text" name="fields[name]" placeholder="Your first name" autocomplete="given-name" />
+        <input type="email" name="fields[email]" placeholder="Your email address" autocomplete="email" required />
+        <button type="submit" class="btn btn-primary" style="white-space:nowrap;">Subscribe</button>
+      </form>
+      <p class="al-bottom-nl-success" style="display:none;">Thank you! Check your inbox.</p>
+      <p class="al-bottom-nl-privacy">Your information is safe. Unsubscribe anytime.</p>
+    </div>
+  </section>
+
+</AuthorLandingLayout>
+
+<style>
+  /* ── Briar Morgan Purple/Teal Theme (Ghostly Inn) ── */
+
+  /* Hero */
+  :global(.bm-hero) {
+    background: linear-gradient(135deg, #2D1B4E 0%, #1A1035 60%, #15243A 100%);
+    padding: 3rem 0;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Carousel */
+  :global(.bm-hero-carousel) {
+    position: relative;
+    width: 100%;
+  }
+
+  :global(.bm-hero-slide) {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  :global(.bm-hero-slide.active) {
+    display: block;
+    opacity: 1;
+  }
+
+  /* Arrows */
+  :global(.bm-hero-arrow) {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    background: rgba(168, 85, 247, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #ffffff;
+    transition: background 0.2s, border-color 0.2s;
+  }
+
+  :global(.bm-hero-arrow):hover {
+    background: #A855F7;
+    border-color: #A855F7;
+  }
+
+  :global(.bm-hero-arrow) svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  :global(.bm-hero-arrow--left) {
+    left: 1.5rem;
+  }
+
+  :global(.bm-hero-arrow--right) {
+    right: 1.5rem;
+  }
+
+  /* Dots */
+  :global(.bm-hero-dots) {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem 0 0;
+    position: relative;
+    z-index: 10;
+  }
+
+  :global(.bm-hero-dot) {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    background: transparent;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+    padding: 0;
+  }
+
+  :global(.bm-hero-dot.active),
+  :global(.bm-hero-dot):hover {
+    background: #A855F7;
+    border-color: #A855F7;
+  }
+
+  :global(.bm-hero-inner) {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+  }
+
+  :global(.bm-hero-text) {
+    flex: 1;
+  }
+
+  :global(.bm-hero-title) {
+    font-family: 'Poppins', sans-serif;
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.05;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.02em;
+  }
+
+  :global(.bm-hero-tagline) {
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #B8A0D2;
+    margin-bottom: 1.25rem;
+  }
+
+  :global(.bm-hero-blurb) {
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    color: #d0c4e0;
+    margin-bottom: 2rem;
+    max-width: 520px;
+  }
+
+  :global(.bm-hero-btn) {
+    display: inline-block;
+    padding: 1rem 3rem;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #ffffff;
+    background: #A855F7;
+    border: none;
+    border-radius: 4px;
+    transition: background 0.2s, transform 0.2s;
+  }
+
+  :global(.bm-hero-btn):hover {
+    background: #ffffff;
+    color: #2D1B4E;
+    transform: translateY(-2px);
+  }
+
+  :global(.bm-hero-cover) {
+    flex: 0 0 300px;
+    align-self: center;
+  }
+
+  :global(.bm-hero-cover) img {
+    width: 300px;
+    display: block;
+    border-radius: 4px;
+    box-shadow: -8px 4px 30px rgba(0,0,0,0.4);
+  }
+
+  /* Opt-in bar */
+  :global(.bm-optin-bar) {
+    background: #1A1035;
+    padding: 1.5rem 0;
+  }
+
+  :global(.bm-optin-bar) .al-optin {
+    background: transparent;
+    border: none;
+    padding: 0;
+  }
+
+  :global(.bm-optin-bar) .al-optin h2 {
+    color: #ffffff;
+  }
+
+  :global(.bm-optin-bar) .al-optin p {
+    color: #d0c4e0;
+  }
+
+  :global(.bm-optin-bar) .al-optin-form input[type="text"],
+  :global(.bm-optin-bar) .al-optin-form input[type="email"] {
+    background: rgba(184, 160, 210, 0.15);
+    border-color: #B8A0D2;
+    color: #ffffff;
+  }
+
+  :global(.bm-optin-bar) .al-optin-form input::placeholder {
+    color: #B8A0D2;
+  }
+
+  :global(.bm-optin-bar) .al-optin-privacy {
+    color: #B8A0D2 !important;
+  }
+
+  :global(.bm-highlight) {
+    background: linear-gradient(to top, rgba(168, 85, 247, 0.35) 40%, transparent 40%);
+    color: inherit;
+    padding: 0 4px;
+  }
+
+  :global(.bm-optin-bar) .al-btn-dark {
+    background: #A855F7;
+    border-color: #A855F7;
+    color: #ffffff !important;
+  }
+
+  :global(.bm-optin-bar) .al-btn-dark:hover {
+    background: #ffffff;
+    color: #A855F7 !important;
+  }
+
+  /* Profile photo */
+  .author-hero .photo {
+    border: none;
+    border-radius: 8px;
+  }
+
+  /* Purple accent overrides */
+  :global(.al-section) .btn-primary {
+    background: #2D1B4E;
+    color: #ffffff;
+  }
+  :global(.al-section) .btn-primary:hover {
+    background: #ffffff;
+    color: #2D1B4E;
+    border: 1px solid #2D1B4E;
+  }
+
+  :global(.al-section) .btn-outline {
+    border-color: #2D1B4E;
+    color: #2D1B4E;
+  }
+  :global(.al-section) .btn-outline:hover {
+    background: #2D1B4E;
+    color: #ffffff;
+  }
+
+  :global(.al-section) .tag:hover,
+  :global(.al-section) .tag.active {
+    background: #2D1B4E;
+    border-color: #2D1B4E;
+    color: #ffffff;
+  }
+
+  :global(.al-section) .section-title span {
+    color: #2D1B4E;
+  }
+
+  :global(.al-section) a {
+    color: #2D1B4E;
+  }
+  :global(.al-section) a:hover {
+    color: #4A2D6B;
+  }
+
+  /* Pre-order Banner */
+  :global(.al-preorder-banner) {
+    position: relative;
+    background-size: cover;
+    background-position: center top;
+    background-repeat: no-repeat;
+    min-height: 480px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  :global(.al-preorder-banner) {
+    background-position: center bottom !important;
+  }
+
+  :global(.al-preorder-overlay) {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(26, 16, 53, 0.88) 0%,
+      rgba(26, 16, 53, 0.82) 40%,
+      rgba(26, 16, 53, 0.7) 100%
+    );
+    z-index: 1;
+  }
+
+  :global(.al-preorder-inner) {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    padding: 3rem 0;
+  }
+
+  :global(.al-preorder-cover) {
+    flex: 0 0 220px;
+  }
+
+  :global(.al-preorder-cover) img {
+    width: 220px;
+    border-radius: 4px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+  }
+
+  :global(.al-preorder-content) {
+    flex: 1;
+  }
+
+  :global(.al-preorder-label) {
+    display: inline-block;
+    font-size: 1.625rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #A855F7;
+    margin-bottom: 1rem;
+  }
+
+  :global(.al-preorder-title) {
+    font-family: 'Poppins', sans-serif;
+    font-size: 3rem;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.1;
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.02em;
+  }
+
+  :global(.al-preorder-blurb) {
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    color: #d0c4e0;
+    margin-bottom: 2rem;
+  }
+
+  :global(.al-preorder-btn) {
+    display: inline-block;
+    padding: 1rem 3rem;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #ffffff;
+    background: #A855F7;
+    border: none;
+    border-radius: 4px;
+    transition: background 0.2s, transform 0.2s;
+  }
+
+  :global(.al-preorder-btn):hover {
+    background: #ffffff;
+    color: #2D1B4E !important;
+    transform: translateY(-2px);
+  }
+
+  /* Latest Releases */
+  :global(.al-releases-grid) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+  }
+
+  :global(.al-release-card) {
+    display: flex;
+    gap: 1.5rem;
+    align-items: stretch;
+  }
+
+  :global(.al-release-card) .cover-wrap {
+    flex: 0 0 160px;
+  }
+
+  :global(.al-release-card) .cover-wrap img {
+    width: 160px;
+    border-radius: 4px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  }
+
+  :global(.al-release-card) .release-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  :global(.al-release-card) .release-info h3 {
+    color: #1a1a1a;
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  :global(.al-release-card) .release-info h3 mark {
+    background: linear-gradient(to top, #2D1B4E40 40%, transparent 40%);
+    color: inherit;
+    padding: 0 4px;
+  }
+
+  :global(.al-release-card) .release-info .blurb {
+    color: #444444;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    margin-bottom: 1.25rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  :global(.al-release-card) .release-info .btn {
+    margin-top: auto;
+    align-self: flex-start;
+  }
+
+  :global(.al-latest-releases) .section-title span {
+    position: relative;
+    display: inline-block;
+  }
+
+  :global(.al-latest-releases) .section-title span::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 2px;
+    width: 100%;
+    height: 8px;
+    background: #2D1B4E40;
+    z-index: -1;
+  }
+
+  /* Light lavender sections (About + Bottom Newsletter) */
+  :global(.bm-section-lavender) {
+    background: #F8F2FB !important;
+  }
+
+  /* Scroll-to-top deep purple */
+  :global(.al-scroll-top) {
+    background: #2D1B4E !important;
+    border-color: #2D1B4E !important;
+    color: #ffffff !important;
+  }
+  :global(.al-scroll-top):hover {
+    background: #A855F7 !important;
+    border-color: #A855F7 !important;
+    color: #ffffff !important;
+  }
+
+  /* Bottom Newsletter */
+  :global(.al-bottom-newsletter) {
+    text-align: center;
+  }
+
+  :global(.al-bottom-nl-heading) {
+    color: var(--color-text);
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  :global(.al-bottom-nl-desc) {
+    color: var(--color-text-muted);
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    margin-bottom: var(--space-md);
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  :global(.al-bottom-nl-form) {
+    display: flex;
+    gap: var(--space-xs);
+    max-width: 640px;
+    margin: 0 auto;
+    flex-direction: row;
+  }
+
+  :global(.al-bottom-nl-form) input[type="text"],
+  :global(.al-bottom-nl-form) input[type="email"] {
+    padding: 0.75rem 1rem;
+    border: 1px solid #d6d0c4;
+    border-radius: 4px;
+    background: #ffffff;
+    color: var(--color-text);
+    font-size: 0.9375rem;
+    width: 100%;
+  }
+
+  :global(.al-bottom-nl-form) input::placeholder {
+    color: #999999;
+  }
+
+  :global(.al-bottom-nl-privacy) {
+    font-size: 0.75rem !important;
+    color: #1a1a1a !important;
+    margin-top: var(--space-xs);
+    margin-bottom: 0 !important;
+    text-align: center;
+  }
+
+  @media (max-width: 768px) {
+    :global(.bm-hero-inner) {
+      flex-direction: column-reverse;
+      text-align: center;
+    }
+    :global(.bm-hero-title) {
+      font-size: 2.25rem;
+    }
+    :global(.bm-hero-cover) {
+      flex: none;
+      width: 220px;
+    }
+    :global(.bm-hero-cover) img {
+      width: 220px;
+    }
+    :global(.al-preorder-banner) {
+      min-height: 400px;
+    }
+    :global(.al-preorder-inner) {
+      flex-direction: column;
+      text-align: center;
+    }
+    :global(.al-preorder-cover) {
+      flex: none;
+      width: 180px;
+    }
+    :global(.al-preorder-cover) img {
+      width: 180px;
+    }
+    :global(.al-preorder-title) {
+      font-size: 2rem;
+    }
+    :global(.al-releases-grid) {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    :global(.al-release-card) {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    :global(.al-release-card) .release-info .btn {
+      align-self: center;
+    }
+    :global(.al-bottom-nl-form) {
+      flex-direction: column;
+    }
+    :global(.bm-hero-arrow) {
+      width: 36px;
+      height: 36px;
+    }
+    :global(.bm-hero-arrow--left) {
+      left: 0.5rem;
+    }
+    :global(.bm-hero-arrow--right) {
+      right: 0.5rem;
+    }
+    :global(.bm-hero-arrow) svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    :global(.bm-hero) {
+      padding: 2rem 0;
+    }
+    :global(.bm-hero-inner) {
+      gap: 1.5rem;
+    }
+    :global(.bm-hero-title) {
+      font-size: 1.75rem;
+    }
+    :global(.bm-hero-tagline) {
+      font-size: 0.8125rem;
+    }
+    :global(.bm-hero-blurb) {
+      font-size: 0.9375rem;
+    }
+    :global(.bm-hero-btn) {
+      padding: 0.75rem 2rem;
+      font-size: 0.875rem;
+    }
+    :global(.bm-hero-cover) {
+      width: 180px;
+    }
+    :global(.bm-hero-cover) img {
+      width: 180px;
+    }
+    :global(.bm-hero-arrow) {
+      width: 32px;
+      height: 32px;
+    }
+    :global(.bm-hero-arrow--left) {
+      left: 0.25rem;
+    }
+    :global(.bm-hero-arrow--right) {
+      right: 0.25rem;
+    }
+    :global(.bm-hero-arrow) svg {
+      width: 16px;
+      height: 16px;
+    }
+    :global(.bm-hero-dot) {
+      width: 12px;
+      height: 12px;
+    }
+    :global(.al-preorder-banner) {
+      min-height: 320px;
+    }
+    :global(.al-preorder-title) {
+      font-size: 1.75rem;
+    }
+    :global(.al-preorder-label) {
+      font-size: 1.25rem;
+    }
+    :global(.al-preorder-blurb) {
+      font-size: 0.9375rem;
+    }
+    :global(.al-preorder-btn) {
+      padding: 0.75rem 2rem;
+      font-size: 0.875rem;
+    }
+    :global(.al-preorder-inner) {
+      gap: 1.5rem;
+      padding: 2rem 0;
+    }
+    :global(.al-preorder-cover) {
+      width: 150px;
+    }
+    :global(.al-preorder-cover) img {
+      width: 150px;
+    }
+    :global(.al-release-card) .cover-wrap {
+      flex: 0 0 130px;
+    }
+    :global(.al-release-card) .cover-wrap img {
+      width: 130px;
+    }
+    :global(.bm-optin-bar) {
+      padding: 1rem 0;
+    }
+  }
+</style>
+
+<script>
+  // Hero carousel
+  const slides = document.querySelectorAll('.bm-hero-slide') as NodeListOf<HTMLElement>;
+  const dots = document.querySelectorAll('.bm-hero-dot') as NodeListOf<HTMLButtonElement>;
+  const prevBtn = document.getElementById('bmHeroPrev');
+  const nextBtn = document.getElementById('bmHeroNext');
+  let current = 0;
+  let autoTimer: ReturnType<typeof setInterval>;
+
+  function goToSlide(index: number) {
+    slides[current].classList.remove('active');
+    dots[current].classList.remove('active');
+    current = (index + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    dots[current].classList.add('active');
+  }
+
+  function startAuto() {
+    autoTimer = setInterval(() => goToSlide(current + 1), 6000);
+  }
+
+  function resetAuto() {
+    clearInterval(autoTimer);
+    startAuto();
+  }
+
+  prevBtn?.addEventListener('click', () => { goToSlide(current - 1); resetAuto(); });
+  nextBtn?.addEventListener('click', () => { goToSlide(current + 1); resetAuto(); });
+  dots.forEach(dot => {
+    dot.addEventListener('click', () => {
+      goToSlide(Number(dot.dataset.dot));
+      resetAuto();
+    });
+  });
+
+  startAuto();
+
+  // Newsletter forms
+  function setupNlForm(formSelector: string, successSelector: string) {
+    const form = document.querySelector(formSelector) as HTMLFormElement;
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const action = form.dataset.action;
+      const formData = new FormData(form);
+      formData.append('ml-submit', '1');
+      formData.append('anticsrf', 'true');
+      try {
+        await fetch(action!, { method: 'POST', body: formData, mode: 'no-cors' });
+      } catch (_) {}
+      form.style.display = 'none';
+      document.querySelector(successSelector)!.setAttribute('style', 'display:block; color:#ffffff; font-weight:600; margin-top:var(--space-sm);');
+    });
+  }
+
+  setupNlForm('.al-optin-form', '.al-optin-success');
+  setupNlForm('.al-bottom-nl-form', '.al-bottom-nl-success');
+</script>

@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 500" fill="none">
+  <!-- Mother figure -->
+  <g fill="#ffffff" opacity="0.9">
+    <!-- Mother head -->
+    <circle cx="130" cy="52" r="28"/>
+    <!-- Mother hair flowing -->
+    <path d="M102 42 C98 25, 115 10, 135 15 C155 10, 168 25, 162 45 C165 35, 158 20, 140 18 C120 16, 105 28, 102 42Z"/>
+    <path d="M100 48 C95 55, 93 70, 98 78 L102 52Z"/>
+    <!-- Mother neck -->
+    <rect x="122" y="78" width="16" height="14" rx="4"/>
+    <!-- Mother torso - dress -->
+    <path d="M100 92 C100 88, 122 85, 130 85 C138 85, 160 88, 160 92 L168 200 C168 205, 92 205, 92 200Z"/>
+    <!-- Mother waist belt -->
+    <rect x="95" y="145" width="70" height="6" rx="3" fill="#C65D2C" opacity="0.8"/>
+    <!-- Mother skirt -->
+    <path d="M88 200 L80 380 C80 385, 180 385, 180 380 L172 200Z"/>
+    <!-- Mother left arm -->
+    <path d="M100 95 C85 100, 72 130, 68 160 C65 175, 70 180, 75 178 C80 176, 82 170, 85 155 L95 120Z" />
+    <!-- Mother right arm reaching down to child -->
+    <path d="M160 95 C172 105, 180 135, 185 170 C188 190, 192 220, 195 245 C197 252, 192 255, 188 253 C184 250, 183 245, 182 235 L165 130Z"/>
+    <!-- Mother hand holding child's hand -->
+    <ellipse cx="190" cy="250" rx="8" ry="6"/>
+    <!-- Mother left shoe -->
+    <path d="M88 378 L82 395 C80 400, 105 400, 103 395 L100 378Z"/>
+    <!-- Mother right shoe -->
+    <path d="M158 378 L152 395 C150 400, 175 400, 173 395 L168 378Z"/>
+  </g>
+
+  <!-- Daughter figure -->
+  <g fill="#ffffff" opacity="0.85">
+    <!-- Daughter head -->
+    <circle cx="220" cy="175" r="20"/>
+    <!-- Daughter pigtails -->
+    <circle cx="200" cy="165" r="8"/>
+    <circle cx="240" cy="165" r="8"/>
+    <!-- Daughter hair band -->
+    <path d="M200 170 C205 160, 235 160, 240 170" stroke="#C65D2C" stroke-width="3" fill="none" opacity="0.8"/>
+    <!-- Daughter neck -->
+    <rect x="214" y="193" width="12" height="10" rx="3"/>
+    <!-- Daughter torso - dress -->
+    <path d="M200 203 C200 200, 214 198, 220 198 C226 198, 240 200, 240 203 L248 280 C248 285, 192 285, 192 280Z"/>
+    <!-- Daughter dress detail -->
+    <rect x="198" y="240" width="44" height="4" rx="2" fill="#C65D2C" opacity="0.6"/>
+    <!-- Daughter left arm reaching up to mother -->
+    <path d="M200 206 C190 210, 188 230, 190 248 C191 252, 195 254, 192 250 L195 220Z"/>
+    <!-- Daughter hand -->
+    <ellipse cx="190" cy="250" rx="6" ry="5"/>
+    <!-- Daughter right arm -->
+    <path d="M240 206 C250 215, 255 235, 252 255 C251 260, 246 258, 247 253 L245 220Z"/>
+    <!-- Daughter left leg -->
+    <path d="M202 278 L196 370 C196 375, 212 375, 212 370 L210 278Z"/>
+    <!-- Daughter right leg -->
+    <path d="M228 278 L222 370 C222 375, 238 375, 238 370 L236 278Z"/>
+    <!-- Daughter left shoe -->
+    <path d="M198 368 L194 380 C192 384, 212 384, 210 380 L208 368Z"/>
+    <!-- Daughter right shoe -->
+    <path d="M224 368 L220 380 C218 384, 238 384, 236 380 L234 368Z"/>
+  </g>
+
+  <!-- Paper cut edge effect - subtle dashed outline -->
+  <g stroke="#ffffff" stroke-width="0.5" fill="none" opacity="0.15" stroke-dasharray="4,6">
+    <!-- Mother outline hint -->
+    <circle cx="130" cy="52" r="30"/>
+    <path d="M96 92 L86 200 L78 382 M164 92 L174 200 L182 382"/>
+    <!-- Daughter outline hint -->
+    <circle cx="220" cy="175" r="22"/>
+    <path d="M196 203 L190 280 L194 372 M244 203 L250 280 L240 372"/>
+  </g>
+</svg>

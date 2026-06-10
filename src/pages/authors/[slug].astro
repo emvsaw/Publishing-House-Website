@@ -1,0 +1,191 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const authors = await getCollection('authors');
+  const books = await getCollection('books');
+
+  // Kate Thomas has a dedicated landing page (kate-thomas.astro)
+  const filtered = authors.filter(a => !['kate-thomas', 'madison-lane', 'briar-morgan'].includes(a.data.slug));
+
+  return filtered.map(author => ({
+    params: { slug: author.data.slug },
+    props: {
+      author: author.data,
+      books: books
+        .filter(b => b.data.authorSlug === author.data.slug)
+        .sort((a, b) => new Date(b.data.releaseDate).getTime() - new Date(a.data.releaseDate).getTime()),
+    },
+  }));
+}
+
+const { author, books } = Astro.props;
+const latestRelease = books[0];
+const remainingBooks = books.slice(1);
+const social = author.socialLinks ?? {};
+const theme = author.theme ?? null;
+---
+
+<BaseLayout title={`${author.name} | Wildfire Press`} description={`Books by ${author.name}. ${author.genres.join(', ')}.`}>
+
+  <div class="author-page" data-theme={theme}>
+  <!-- Author Bio -->
+  <div class="container">
+    <div class="author-hero">
+      <img src={author.photo} alt={author.name} class="photo" loading="lazy" />
+      <div class="bio-box">
+        <h1>{author.name}</h1>
+        <div class="genre-list">
+          {author.genres.map(g => <span class="tag">{g}</span>)}
+        </div>
+        <p class="bio-text">{author.bio}</p>
+        <div class="social-links">
+          {social.instagram && <a href={social.instagram} target="_blank" rel="noopener">Instagram</a>}
+          {social.tiktok && <a href={social.tiktok} target="_blank" rel="noopener">TikTok</a>}
+          {social.facebook && <a href={social.facebook} target="_blank" rel="noopener">Facebook</a>}
+          {social.website && <a href={social.website} target="_blank" rel="noopener">Website</a>}
+          {social.goodreads && <a href={social.goodreads} target="_blank" rel="noopener">Goodreads</a>}
+          {social.amazon && <a href={social.amazon} target="_blank" rel="noopener">Amazon</a>}
+        </div>
+      </div>
+    </div>
+
+    <!-- Free Book -->
+    {author.freeBook && (
+      <div class="free-book-wrap">
+        <div class="section-title" style="text-align:left;">
+          <span>Free Book</span>
+        </div>
+        <div class="free-book-box">
+          <div class="free-book-cover">
+            <img src={author.freeBook.cover} alt={author.freeBook.title} loading="lazy" />
+          </div>
+          <div class="free-book-info">
+            <h3>{author.freeBook.title}</h3>
+            <p class="blurb">{author.freeBook.blurb}</p>
+            <a href={author.freeBook.link} class="btn btn-primary" target="_blank" rel="noopener">
+              Get Your Free Copy
+            </a>
+          </div>
+        </div>
+      </div>
+    )}
+
+    <!-- Latest Release -->
+    {latestRelease && (
+      <div>
+        <div class="section-title" style="text-align:left;">
+          <span>Latest Release</span>
+        </div>
+        <div class="latest-release">
+          <div class="cover-wrap">
+            <img src={latestRelease.data.cover} alt={latestRelease.data.title} loading="lazy" />
+          </div>
+          <div class="release-info">
+            <h3>{latestRelease.data.title}</h3>
+            <span class="tag" style="margin-bottom: var(--space-sm); display:inline-block;">{latestRelease.data.genre}</span>
+            <p class="blurb">{latestRelease.data.blurb}</p>
+            {latestRelease.data.buyLinks?.amazon && (
+              <a href={latestRelease.data.buyLinks.amazon} class="btn btn-primary" target="_blank" rel="noopener">
+                Buy on Amazon
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+    )}
+
+    <!-- Coming Soon -->
+    {author.comingSoon && (
+      <div class="coming-soon-wrap">
+        <div class="section-title" style="text-align:left;">
+          <span>Coming Soon</span>
+        </div>
+        <div class="coming-soon-box">
+          <div class="coming-soon-columns">
+            <div class="cover-wrap">
+              <img src={author.comingSoon.cover} alt={author.comingSoon.title} loading="lazy" />
+            </div>
+            <div class="cs-info">
+              <h3>{author.comingSoon.title}</h3>
+              <p class="blurb">{author.comingSoon.blurb}</p>
+            </div>
+          </div>
+          {author.comingSoon.preorderLink && (
+            <a href={author.comingSoon.preorderLink} class="btn btn-primary coming-soon-btn" target="_blank" rel="noopener">
+              PREORDER BOOK
+            </a>
+          )}
+        </div>
+      </div>
+    )}
+
+    <!-- Full Booklist -->
+    {remainingBooks.length > 0 && (
+      <section class="section">
+        <div class="section-title" style="text-align:left;">
+          <span>All Books</span>
+          <h2>By {author.name}</h2>
+        </div>
+        <div class="book-grid">
+          {remainingBooks.map(book => (
+            <div class="card book-card">
+              <div class="cover-wrap">
+                <img src={book.data.cover} alt={book.data.title} loading="lazy" />
+              </div>
+              <div class="info">
+                <h4>{book.data.title}</h4>
+                <span class="tag genre-tag">{book.data.genre}</span>
+                <p class="book-card-blurb">
+                  {book.data.blurb}
+                </p>
+                {book.data.buyLinks?.amazon && (
+                  <a href={book.data.buyLinks.amazon} class="btn btn-outline book-card-btn" target="_blank" rel="noopener">
+                    Read on Amazon
+                  </a>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Author Newsletter -->
+    <section class="section">
+      <div class="newsletter">
+        <h2>Subscribe to {author.name}'s Newsletter</h2>
+        <p>Be the first to hear about new releases, exclusive content, and special offers.</p>
+        {author.newsletterEmbedId ? (
+          <div class="ml-embedded" data-form={author.newsletterEmbedId}></div>
+        ) : (
+          <form class="author-nl-form" data-action={author.newsletterFormAction ?? '#'}>
+            <input type="text" name="fields[name]" placeholder="Name" autocomplete="given-name" />
+            <input type="email" name="fields[email]" placeholder="Email" autocomplete="email" required />
+            <button type="submit" class="btn btn-primary" style="white-space:nowrap;">Subscribe</button>
+          </form>
+        )}
+        <p class="nl-success" style="display:none; font-weight:600; margin-top:var(--space-sm);">Thank you! You're on the list.</p>
+      </div>
+    </section>
+  </div>
+  </div>
+
+</BaseLayout>
+
+<script>
+  const nlForm = document.querySelector('.author-nl-form') as HTMLFormElement;
+  nlForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const action = nlForm.dataset.action;
+    const formData = new FormData(nlForm);
+    formData.append('ml-submit', '1');
+    formData.append('anticsrf', 'true');
+    try {
+      await fetch(action!, { method: 'POST', body: formData, mode: 'no-cors' });
+    } catch (_) {}
+    nlForm.style.display = 'none';
+    document.querySelector('.nl-success')!.setAttribute('style', 'display:block; font-weight:600; margin-top:var(--space-sm);');
+  });
+</script>

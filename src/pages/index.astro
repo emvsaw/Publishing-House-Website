@@ -1,0 +1,175 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allAuthors = await getCollection('authors');
+const allBooks = await getCollection('books');
+
+const featuredBooks = allBooks.filter(b => b.data.featured);
+const genres = [...new Set(allBooks.map(b => b.data.genre))].sort();
+
+// Build a lookup for author names
+const authorMap = Object.fromEntries(allAuthors.map(a => [a.data.slug, a.data]));
+---
+
+<BaseLayout title="Wildfire Press | Bold Stories, Unforgettable Voices">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <h1>Wildfire Press</h1>
+      <p class="tagline">Bold stories. Unforgettable voices.</p>
+      <p class="mission">
+        We're an indie publishing house championing fresh, fearless fiction across paranormal romance,
+        thriller, and cozy mystery. Every book we publish is a story we couldn't put down, and
+        neither will you.
+      </p>
+    </div>
+  </section>
+
+  <!-- Featured Authors -->
+  <section class="section" id="authors">
+    <div class="container">
+      <div class="section-title">
+        <span>Our Authors</span>
+        <h2>Featured Authors</h2>
+      </div>
+      <div class="author-grid">
+        {allAuthors.map(author => (
+          <a href={`/authors/${author.data.slug}/`} class="card author-card" style="text-decoration:none; color:inherit;">
+            <img
+              src={author.data.photo}
+              alt={author.data.name}
+              class="avatar"
+              loading="lazy"
+            />
+            <div class="meta">
+              <h3>{author.data.name}</h3>
+              <p class="genres">{author.data.genres.join(' · ')}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Browse by Genre + Book Grid -->
+  <section class="section" id="books">
+    <div class="container">
+      <div class="section-title">
+        <span>Browse</span>
+        <h2>Our Books</h2>
+      </div>
+
+      <!-- Genre filters -->
+      <div class="filter-bar" id="genre-filters">
+        <button class="tag active" data-genre="all">All</button>
+        {genres.map(genre => (
+          <button class="tag" data-genre={genre}>{genre}</button>
+        ))}
+      </div>
+
+      <!-- Author filters -->
+      <div class="filter-bar" id="author-filters">
+        <button class="tag active" data-author="all">All Authors</button>
+        {allAuthors.map(author => (
+          <button class="tag" data-author={author.data.slug}>{author.data.name}</button>
+        ))}
+      </div>
+
+      <!-- Book grid -->
+      <div class="book-grid" id="book-grid">
+        {allBooks
+          .sort((a, b) => new Date(b.data.releaseDate).getTime() - new Date(a.data.releaseDate).getTime())
+          .map(book => {
+            const author = authorMap[book.data.authorSlug];
+            return (
+              <div class="card book-card" data-genre={book.data.genre} data-author={book.data.authorSlug}>
+                <div class="cover-wrap">
+                  <img src={book.data.cover} alt={book.data.title} loading="lazy" />
+                </div>
+                <div class="info">
+                  <h4>{book.data.title}</h4>
+                  <p class="author-name">{author?.name ?? book.data.authorSlug}</p>
+                  <span class="tag genre-tag">{book.data.genre}</span>
+                  {book.data.buyLinks?.amazon && (
+                    <a href={book.data.buyLinks.amazon} class="btn btn-dark" target="_blank" rel="noopener">Buy Now</a>
+                  )}
+                </div>
+              </div>
+            );
+          })
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter -->
+  <section class="newsletter-banner" id="newsletter">
+    <div class="container">
+      <h2>Stay in the Loop</h2>
+      <p>Subscribe to the Wildfire Press newsletter for updates from our publisher and our authors.</p>
+      <form id="main-newsletter-form">
+        <input type="text" name="fields[name]" placeholder="Name" autocomplete="given-name" />
+        <input type="email" name="fields[email]" placeholder="Email" autocomplete="email" required />
+        <button type="submit" class="btn btn-primary" style="white-space:nowrap;">Get Updates</button>
+      </form>
+      <p id="newsletter-success" style="display:none; color:var(--color-white); font-weight:600; margin-top:var(--space-sm);">Thank you! You're on the list.</p>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<script>
+  // ── Client-side filtering ──
+  const genreButtons = document.querySelectorAll<HTMLButtonElement>('#genre-filters .tag');
+  const authorButtons = document.querySelectorAll<HTMLButtonElement>('#author-filters .tag');
+  const bookCards = document.querySelectorAll<HTMLElement>('#book-grid .book-card');
+
+  let activeGenre = 'all';
+  let activeAuthor = 'all';
+
+  function filterBooks() {
+    bookCards.forEach(card => {
+      const matchGenre = activeGenre === 'all' || card.dataset.genre === activeGenre;
+      const matchAuthor = activeAuthor === 'all' || card.dataset.author === activeAuthor;
+      card.style.display = matchGenre && matchAuthor ? '' : 'none';
+    });
+  }
+
+  genreButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      genreButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeGenre = btn.dataset.genre ?? 'all';
+      filterBooks();
+    });
+  });
+
+  authorButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      authorButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeAuthor = btn.dataset.author ?? 'all';
+      filterBooks();
+    });
+  });
+
+  // ── Newsletter submit ──
+  const nlForm = document.getElementById('main-newsletter-form') as HTMLFormElement;
+  nlForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(nlForm);
+    formData.append('ml-submit', '1');
+    formData.append('anticsrf', 'true');
+    try {
+      await fetch('https://assets.mailerlite.com/jsonp/YOUR_ACCOUNT_ID/forms/YOUR_FORM_ID/subscribe', {
+        method: 'POST',
+        body: formData,
+        mode: 'no-cors',
+      });
+    } catch (_) {}
+    nlForm.style.display = 'none';
+    document.getElementById('newsletter-success')!.style.display = 'block';
+  });
+</script>

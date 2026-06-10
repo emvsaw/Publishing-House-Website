@@ -1,0 +1,738 @@
+---
+import AuthorLandingLayout from '../../layouts/AuthorLandingLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allAuthors = await getCollection('authors');
+const allBooks = await getCollection('books');
+
+const author = allAuthors.find(a => a.data.slug === 'madison-lane')!.data;
+const books = allBooks
+  .filter(b => b.data.authorSlug === 'madison-lane')
+  .sort((a, b) => new Date(b.data.releaseDate).getTime() - new Date(a.data.releaseDate).getTime());
+
+const heroBook = books.find(b => b.data.title === 'Feral Obsession') ?? books[0];
+const latestReleases = books.slice(0, 2);
+const remainingBooks = books.slice(2);
+const social = author.socialLinks ?? {};
+---
+
+<AuthorLandingLayout title={`${author.name} | Paranormal Romance Author`} description={`Books by ${author.name}. Fierce heroines. Protective shifters. Fated mates.`} authorName={author.name}>
+
+  <!-- HERO: Featured Book Banner -->
+  <section class="ml-hero" id="books">
+    <div class="ml-hero-inner container">
+      <div class="ml-hero-text">
+        <h1 class="ml-hero-title">{heroBook.data.title}</h1>
+        <p class="ml-hero-tagline">Fierce heroines. Protective shifters. Love that defies the supernatural.</p>
+        <p class="ml-hero-blurb">{heroBook.data.blurb}</p>
+        <a href={heroBook.data.buyLinks?.amazon ?? 'https://www.amazon.com'} class="ml-hero-btn" target="_blank" rel="noopener">
+          Start Reading
+        </a>
+      </div>
+      <div class="ml-hero-cover">
+        <img src={heroBook.data.cover} alt={heroBook.data.title} />
+      </div>
+    </div>
+  </section>
+
+  <!-- Opt-in -->
+  <div class="ml-optin-bar">
+    <div class="container">
+      <div class="al-optin" id="newsletter">
+        <div class="al-optin-text">
+          <h2><mark class="ml-optin-highlight">Get a Free Book from {author.name}</mark></h2>
+          <p>Join the mailing list for exclusive content, new release alerts, and a free paranormal romance.</p>
+        </div>
+        <div class="al-optin-form-wrap">
+          <form class="al-optin-form" data-action={author.newsletterFormAction ?? '#'}>
+            <input type="text" name="fields[name]" placeholder="First name" autocomplete="given-name" />
+            <input type="email" name="fields[email]" placeholder="Email" autocomplete="email" required />
+            <button type="submit" class="btn al-btn-dark" style="white-space:nowrap;">Subscribe</button>
+          </form>
+          <p class="al-optin-success" style="display:none;">Thank you! Check your inbox.</p>
+          <p class="al-optin-privacy">Your information is safe. Unsubscribe anytime.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- About -->
+  <section class="al-section al-section-light" id="about">
+    <div class="container">
+      <div class="author-hero">
+        <img src={author.photo} alt={author.name} class="photo" loading="lazy" />
+        <div class="bio-box">
+          <h2>{author.name}</h2>
+          <div class="genre-list">
+            {author.genres.map(g => <span class="tag">{g}</span>)}
+          </div>
+          <p class="bio-text">{author.bio}</p>
+          <div class="social-links">
+            {social.instagram && <a href={social.instagram} target="_blank" rel="noopener">Instagram</a>}
+            {social.tiktok && <a href={social.tiktok} target="_blank" rel="noopener">TikTok</a>}
+            {social.facebook && <a href={social.facebook} target="_blank" rel="noopener">Facebook</a>}
+            {social.goodreads && <a href={social.goodreads} target="_blank" rel="noopener">Goodreads</a>}
+            {social.amazon && <a href={social.amazon} target="_blank" rel="noopener">Amazon</a>}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Latest Releases -->
+  {latestReleases.length > 0 && (
+    <section class="al-section al-latest-releases">
+      <div class="container">
+        <div class="section-title" style="text-align:left;">
+          <span>Latest Releases</span>
+        </div>
+        <div class="al-releases-grid">
+          {latestReleases.map(book => (
+            <div class="al-release-card">
+              <div class="cover-wrap">
+                <img src={book.data.cover} alt={book.data.title} loading="lazy" />
+              </div>
+              <div class="release-info">
+                <h3><mark>{book.data.title}</mark></h3>
+                <p class="blurb">{book.data.blurb}</p>
+                {book.data.buyLinks?.amazon && (
+                  <a href={book.data.buyLinks.amazon} class="btn btn-primary" target="_blank" rel="noopener">
+                    Buy on Amazon
+                  </a>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Coming Soon -->
+  {author.comingSoon && (
+    <section class="al-preorder-banner" style={`background-image: url(${author.comingSoon.cover});`}>
+      <div class="al-preorder-overlay"></div>
+      <div class="al-preorder-inner container">
+        <div class="al-preorder-cover">
+          <img src={author.comingSoon.cover} alt={author.comingSoon.title} />
+        </div>
+        <div class="al-preorder-content">
+          <span class="al-preorder-label">Coming Soon</span>
+          <h2 class="al-preorder-title">{author.comingSoon.title}</h2>
+          <p class="al-preorder-blurb">{author.comingSoon.blurb}</p>
+          {author.comingSoon.preorderLink && (
+            <a href={author.comingSoon.preorderLink} class="al-preorder-btn" target="_blank" rel="noopener">
+              Pre-Order Now
+            </a>
+          )}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- All Books -->
+  {remainingBooks.length > 0 && (
+    <section class="al-section" id="all-books">
+      <div class="container">
+        <div class="section-title" style="text-align:left;">
+          <span>All Books</span>
+          <h2>By {author.name}</h2>
+        </div>
+        <div class="book-grid">
+          {remainingBooks.map(book => (
+            <div class="card book-card">
+              <div class="cover-wrap">
+                <img src={book.data.cover} alt={book.data.title} loading="lazy" />
+              </div>
+              <div class="info">
+                <h4>{book.data.title}</h4>
+                <span class="tag genre-tag">{book.data.genre}</span>
+                <p class="book-card-blurb">
+                  {book.data.blurb}
+                </p>
+                {book.data.buyLinks?.amazon && (
+                  <a href={book.data.buyLinks.amazon} class="btn btn-outline book-card-btn" target="_blank" rel="noopener">
+                    Read on Amazon
+                  </a>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Bottom Newsletter -->
+  <section class="al-section al-bottom-newsletter ml-bottom-nl">
+    <div class="container">
+      <h2 class="al-bottom-nl-heading"><mark class="ml-highlight">Never Miss a New Release</mark></h2>
+      <p class="al-bottom-nl-desc">Join {author.name}'s mailing list for exclusive content, early cover reveals, and new release alerts delivered straight to your inbox.</p>
+      <form class="al-bottom-nl-form" data-action={author.newsletterFormAction ?? '#'}>
+        <input type="text" name="fields[name]" placeholder="Your first name" autocomplete="given-name" />
+        <input type="email" name="fields[email]" placeholder="Your email address" autocomplete="email" required />
+        <button type="submit" class="btn btn-primary" style="white-space:nowrap;">Subscribe</button>
+      </form>
+      <p class="al-bottom-nl-success" style="display:none;">Thank you! Check your inbox.</p>
+      <p class="al-bottom-nl-privacy">Your information is safe. Unsubscribe anytime.</p>
+    </div>
+  </section>
+
+</AuthorLandingLayout>
+
+<style>
+  /* ── Madison Lane Blue Theme ── */
+  /* Hero */
+  :global(.ml-hero) {
+    background: #1B3A5C;
+    padding: 3rem 0;
+    overflow: hidden;
+  }
+
+  :global(.ml-hero-inner) {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+  }
+
+  :global(.ml-hero-text) {
+    flex: 1;
+  }
+
+  :global(.ml-hero-title) {
+    font-family: 'Poppins', sans-serif;
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.05;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.02em;
+  }
+
+  :global(.ml-hero-tagline) {
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #8BB8E0;
+    margin-bottom: 1.25rem;
+  }
+
+  :global(.ml-hero-blurb) {
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    color: #c8d8e8;
+    margin-bottom: 2rem;
+    max-width: 520px;
+  }
+
+  :global(.ml-hero-btn) {
+    display: inline-block;
+    padding: 1rem 3rem;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #1B3A5C;
+    background: #ffffff;
+    border: none;
+    border-radius: 4px;
+    transition: background 0.2s, transform 0.2s;
+  }
+
+  :global(.ml-hero-btn):hover {
+    background: #8BB8E0;
+    color: #0f2438;
+    transform: translateY(-2px);
+  }
+
+  :global(.ml-hero-cover) {
+    flex: 0 0 300px;
+    align-self: center;
+  }
+
+  :global(.ml-hero-cover) img {
+    width: 300px;
+    display: block;
+    border-radius: 4px;
+    box-shadow: -8px 4px 30px rgba(0,0,0,0.4);
+  }
+
+  /* Opt-in bar */
+  :global(.ml-optin-bar) {
+    background: #0f2438;
+    padding: 1.5rem 0;
+  }
+
+  :global(.ml-optin-bar) .al-optin {
+    border-color: #1B3A5C;
+    background: transparent;
+    border: none;
+    padding: 0;
+  }
+
+  :global(.ml-optin-bar) .al-optin h2 {
+    color: #ffffff;
+  }
+
+  :global(.ml-optin-bar) .al-optin p {
+    color: #c8d8e8;
+  }
+
+  :global(.ml-optin-bar) .al-optin-form input[type="text"],
+  :global(.ml-optin-bar) .al-optin-form input[type="email"] {
+    background: rgba(139, 184, 224, 0.15);
+    border-color: #8BB8E0;
+    color: #ffffff;
+  }
+
+  :global(.ml-optin-bar) .al-optin-form input::placeholder {
+    color: #8BB8E0;
+  }
+
+  :global(.ml-optin-bar) .al-optin-privacy {
+    color: #8BB8E0 !important;
+  }
+
+  /* Scroll-to-top navy blue */
+  :global(.al-scroll-top) {
+    background: #1B3A5C !important;
+    border-color: #1B3A5C !important;
+    color: #ffffff !important;
+  }
+  :global(.al-scroll-top):hover {
+    background: #8BB8E0 !important;
+    border-color: #8BB8E0 !important;
+    color: #1B3A5C !important;
+  }
+
+  /* Profile photo */
+  .author-hero .photo {
+    border: none;
+    border-radius: 8px;
+  }
+
+  /* Blue accent overrides */
+  :global(.al-section) .btn-primary {
+    background: #1B3A5C;
+    color: #ffffff;
+  }
+  :global(.al-section) .btn-primary:hover {
+    background: #ffffff;
+    color: #1B3A5C;
+    border: 1px solid #1B3A5C;
+  }
+
+  :global(.al-section) .btn-outline {
+    border-color: #1B3A5C;
+    color: #1B3A5C;
+  }
+  :global(.al-section) .btn-outline:hover {
+    background: #1B3A5C;
+    color: #ffffff;
+  }
+
+  :global(.al-section) .tag:hover,
+  :global(.al-section) .tag.active {
+    background: #1B3A5C;
+    border-color: #1B3A5C;
+    color: #ffffff;
+  }
+
+  :global(.al-section) .section-title span {
+    color: #1B3A5C;
+  }
+
+  :global(.al-section) a {
+    color: #1B3A5C;
+  }
+  :global(.al-section) a:hover {
+    color: #153049;
+  }
+
+  /* Pre-order Banner */
+  :global(.al-preorder-banner) {
+    position: relative;
+    background-size: cover;
+    background-position: center top;
+    background-repeat: no-repeat;
+    min-height: 480px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  :global(.al-preorder-overlay) {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(15, 36, 56, 0.8) 0%,
+      rgba(15, 36, 56, 0.9) 50%,
+      rgba(15, 36, 56, 0.95) 100%
+    );
+    z-index: 1;
+  }
+
+  :global(.al-preorder-inner) {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    padding: 3rem 0;
+  }
+
+  :global(.al-preorder-cover) {
+    flex: 0 0 220px;
+  }
+
+  :global(.al-preorder-cover) img {
+    width: 220px;
+    border-radius: 4px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+  }
+
+  :global(.al-preorder-content) {
+    flex: 1;
+  }
+
+  :global(.al-preorder-label) {
+    display: inline-block;
+    font-size: 1.625rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8BB8E0;
+    margin-bottom: 1rem;
+  }
+
+  :global(.al-preorder-title) {
+    font-family: 'Poppins', sans-serif;
+    font-size: 3rem;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.1;
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.02em;
+  }
+
+  :global(.al-preorder-blurb) {
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    color: #c8d8e8;
+    margin-bottom: 2rem;
+  }
+
+  :global(.al-preorder-btn) {
+    display: inline-block;
+    padding: 1rem 3rem;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #ffffff;
+    background: #1B3A5C;
+    border: 2px solid #8BB8E0;
+    border-radius: 4px;
+    transition: background 0.2s, transform 0.2s;
+  }
+
+  :global(.al-preorder-btn):hover {
+    background: #ffffff;
+    color: #1B3A5C !important;
+    border-color: #ffffff;
+    transform: translateY(-2px);
+  }
+
+  /* Latest Releases */
+  :global(.al-releases-grid) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+  }
+
+  :global(.al-release-card) {
+    display: flex;
+    gap: 1.5rem;
+    align-items: stretch;
+  }
+
+  :global(.al-release-card) .cover-wrap {
+    flex: 0 0 160px;
+  }
+
+  :global(.al-release-card) .cover-wrap img {
+    width: 160px;
+    border-radius: 4px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  }
+
+  :global(.al-release-card) .release-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  :global(.al-release-card) .release-info h3 {
+    color: #1a1a1a;
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  :global(.al-release-card) .release-info h3 mark {
+    background: linear-gradient(to top, #1B3A5C40 40%, transparent 40%);
+    color: inherit;
+    padding: 0 4px;
+  }
+
+  :global(.al-release-card) .release-info .blurb {
+    color: #444444;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    margin-bottom: 1.25rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  :global(.al-release-card) .release-info .btn {
+    margin-top: auto;
+    align-self: flex-start;
+  }
+
+  :global(.al-latest-releases) .section-title span {
+    position: relative;
+    display: inline-block;
+  }
+
+  :global(.al-latest-releases) .section-title span::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 2px;
+    width: 100%;
+    height: 8px;
+    background: #1B3A5C40;
+    z-index: -1;
+  }
+
+  /* Bottom Newsletter — dark navy like hero */
+  :global(.ml-bottom-nl) {
+    background: #1B3A5C !important;
+    text-align: center;
+  }
+
+  :global(.ml-bottom-nl) .al-bottom-nl-heading {
+    color: #ffffff;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  :global(.ml-highlight) {
+    background: linear-gradient(to top, rgba(139, 184, 224, 0.4) 40%, transparent 40%);
+    color: inherit;
+    padding: 0 4px;
+  }
+
+  :global(.ml-optin-highlight) {
+    background: linear-gradient(to top, rgba(139, 184, 224, 0.45) 40%, transparent 40%);
+    color: inherit;
+    padding: 0 4px;
+  }
+
+  :global(.ml-bottom-nl) .al-bottom-nl-desc {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    margin-bottom: var(--space-md);
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  :global(.ml-bottom-nl) .al-bottom-nl-form {
+    display: flex;
+    gap: var(--space-xs);
+    max-width: 640px;
+    margin: 0 auto;
+    flex-direction: row;
+  }
+
+  :global(.ml-bottom-nl) .al-bottom-nl-form input[type="text"],
+  :global(.ml-bottom-nl) .al-bottom-nl-form input[type="email"] {
+    padding: 0.75rem 1rem;
+    border: 1px solid rgba(139, 184, 224, 0.4);
+    border-radius: 4px;
+    background: rgba(139, 184, 224, 0.15);
+    color: #ffffff;
+    font-size: 0.9375rem;
+    width: 100%;
+  }
+
+  :global(.ml-bottom-nl) .al-bottom-nl-form input::placeholder {
+    color: #8BB8E0;
+  }
+
+  :global(.ml-bottom-nl) .al-bottom-nl-form .btn-primary {
+    background: #ffffff;
+    color: #1B3A5C;
+    border-color: #ffffff;
+  }
+
+  :global(.ml-bottom-nl) .al-bottom-nl-form .btn-primary:hover {
+    background: #8BB8E0;
+    color: #1B3A5C;
+    border-color: #8BB8E0;
+  }
+
+  :global(.ml-bottom-nl) .al-bottom-nl-privacy {
+    font-size: 0.75rem !important;
+    color: #ffffff !important;
+    margin-top: var(--space-xs);
+    text-align: center;
+    margin-bottom: 0 !important;
+  }
+
+  @media (max-width: 768px) {
+    :global(.ml-hero-inner) {
+      flex-direction: column-reverse;
+      text-align: center;
+    }
+    :global(.ml-hero-text) {
+      padding-bottom: 2rem;
+    }
+    :global(.ml-hero-title) {
+      font-size: 2.25rem;
+    }
+    :global(.ml-hero-cover) {
+      flex: none;
+      width: 220px;
+    }
+    :global(.ml-hero-cover) img {
+      width: 220px;
+    }
+    :global(.al-preorder-banner) {
+      min-height: 400px;
+    }
+    :global(.al-preorder-inner) {
+      flex-direction: column;
+      text-align: center;
+    }
+    :global(.al-preorder-cover) {
+      flex: none;
+      width: 180px;
+    }
+    :global(.al-preorder-cover) img {
+      width: 180px;
+    }
+    :global(.al-preorder-title) {
+      font-size: 2rem;
+    }
+    :global(.al-releases-grid) {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    :global(.al-release-card) {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    :global(.al-release-card) .release-info .btn {
+      align-self: center;
+    }
+    :global(.al-bottom-nl-form) {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 480px) {
+    :global(.ml-hero) {
+      padding: 2rem 0;
+    }
+    :global(.ml-hero-inner) {
+      gap: 1.5rem;
+    }
+    :global(.ml-hero-title) {
+      font-size: 1.75rem;
+    }
+    :global(.ml-hero-tagline) {
+      font-size: 0.875rem;
+    }
+    :global(.ml-hero-blurb) {
+      font-size: 0.9375rem;
+    }
+    :global(.ml-hero-btn) {
+      padding: 0.75rem 2rem;
+      font-size: 0.875rem;
+    }
+    :global(.ml-hero-cover) {
+      width: 180px;
+    }
+    :global(.ml-hero-cover) img {
+      width: 180px;
+    }
+    :global(.al-preorder-banner) {
+      min-height: 320px;
+    }
+    :global(.al-preorder-title) {
+      font-size: 1.75rem;
+    }
+    :global(.al-preorder-label) {
+      font-size: 1.25rem;
+    }
+    :global(.al-preorder-blurb) {
+      font-size: 0.9375rem;
+    }
+    :global(.al-preorder-btn) {
+      padding: 0.75rem 2rem;
+      font-size: 0.875rem;
+    }
+    :global(.al-preorder-inner) {
+      gap: 1.5rem;
+      padding: 2rem 0;
+    }
+    :global(.al-preorder-cover) {
+      width: 150px;
+    }
+    :global(.al-preorder-cover) img {
+      width: 150px;
+    }
+    :global(.al-release-card) .cover-wrap {
+      flex: 0 0 130px;
+    }
+    :global(.al-release-card) .cover-wrap img {
+      width: 130px;
+    }
+    :global(.ml-optin-highlight),
+    :global(.ml-highlight) {
+      padding: 0 2px;
+    }
+  }
+</style>
+
+<script>
+  // Newsletter forms
+  function setupNlForm(formSelector: string, successSelector: string) {
+    const form = document.querySelector(formSelector) as HTMLFormElement;
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const action = form.dataset.action;
+      const formData = new FormData(form);
+      formData.append('ml-submit', '1');
+      formData.append('anticsrf', 'true');
+      try {
+        await fetch(action!, { method: 'POST', body: formData, mode: 'no-cors' });
+      } catch (_) {}
+      form.style.display = 'none';
+      document.querySelector(successSelector)!.setAttribute('style', 'display:block; color:#ffffff; font-weight:600; margin-top:var(--space-sm);');
+    });
+  }
+
+  setupNlForm('.al-optin-form', '.al-optin-success');
+  setupNlForm('.al-bottom-nl-form', '.al-bottom-nl-success');
+</script>
