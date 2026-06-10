@@ -5,7 +5,7 @@ import { getCollection } from 'astro:content';
 const authors = await getCollection('authors');
 const freebies = authors
   .filter(a => a.data.freeBook)
-  .map(a => ({ author: a.data, free: a.data.freeBook! }));
+  .map(a => ({ author: a.data, free: a.data.freeBook!, genre: a.data.genres?.[0] }));
 ---
 
 <BaseLayout
@@ -24,14 +24,17 @@ const freebies = authors
 
   <section class="ff-list">
     <div class="container">
-      {freebies.map(({ author, free }) => (
+      {freebies.map(({ author, free, genre }) => (
         <div class="ff-card">
           <a class="ff-cover" href={`/free/${author.slug}/`} aria-label={`Get ${free.title} free`}>
             <span class="ff-badge">Free</span>
             <img src={free.cover} alt={free.title} loading="lazy" />
           </a>
           <div class="ff-text">
-            <p class="ff-author">{author.name}</p>
+            <p class="ff-author">
+              {author.name}
+              {genre && <span class="ff-genre">{genre}</span>}
+            </p>
             <h2 class="ff-title">{free.title}</h2>
             <p class="ff-blurb">{free.blurb}</p>
             <a href={`/free/${author.slug}/`} class="btn btn-primary">Get It Free</a>
@@ -130,6 +133,21 @@ const freebies = authors
     text-transform: uppercase;
     color: var(--color-accent, #b1402f);
     margin-bottom: 0.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  .ff-genre {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-text-muted, #6b6b6b);
+    background: var(--color-bg-alt, #f1ece2);
+    border-radius: 999px;
+    padding: 0.18rem 0.6rem;
   }
 
   .ff-title {
