@@ -113,6 +113,20 @@ h4 { font-size: 1.25rem; }
   color: var(--color-white);
 }
 
+/* Non-clickable status pill for books not yet for sale */
+.btn-soon {
+  display: inline-block;
+  padding: 0.75rem 1.75rem;
+  border-radius: 4px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  background: transparent;
+  color: var(--color-text-muted, #6b6b6b);
+  border: 1px dashed var(--color-line, #d6d0c4);
+  cursor: default;
+}
+
 .btn-dark {
   background: var(--color-accent);
   color: var(--color-white);

@@ -86,10 +86,12 @@ const theme = author.theme ?? null;
             <h3>{latestRelease.data.title}</h3>
             <span class="tag" style="margin-bottom: var(--space-sm); display:inline-block;">{latestRelease.data.genre}</span>
             <p class="blurb">{latestRelease.data.blurb}</p>
-            {latestRelease.data.buyLinks?.amazon && (
+            {latestRelease.data.buyLinks?.amazon ? (
               <a href={latestRelease.data.buyLinks.amazon} class="btn btn-primary" target="_blank" rel="noopener">
                 Buy on Amazon
               </a>
+            ) : (
+              <span class="btn-soon">Coming Soon</span>
             )}
           </div>
         </div>
@@ -140,10 +142,12 @@ const theme = author.theme ?? null;
                 <p class="book-card-blurb">
                   {book.data.blurb}
                 </p>
-                {book.data.buyLinks?.amazon && (
+                {book.data.buyLinks?.amazon ? (
                   <a href={book.data.buyLinks.amazon} class="btn btn-outline book-card-btn" target="_blank" rel="noopener">
                     Read on Amazon
                   </a>
+                ) : (
+                  <span class="btn-soon book-card-btn">Coming Soon</span>
                 )}
               </div>
             </div>

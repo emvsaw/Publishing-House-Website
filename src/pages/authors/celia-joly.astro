@@ -25,9 +25,13 @@ const social = author.socialLinks ?? {};
         <h1 class="ml-hero-title">{heroBook.data.title}</h1>
         <p class="ml-hero-tagline">An authenticator with a sharp eye. A Europe full of beautiful lies.</p>
         <p class="ml-hero-blurb">{heroBook.data.blurb}</p>
-        <a href={heroBook.data.buyLinks?.amazon ?? 'https://www.amazon.com'} class="ml-hero-btn" target="_blank" rel="noopener">
-          Start Reading
-        </a>
+        {heroBook.data.buyLinks?.amazon ? (
+          <a href={heroBook.data.buyLinks.amazon} class="ml-hero-btn" target="_blank" rel="noopener">
+            Start Reading
+          </a>
+        ) : (
+          <span class="ml-hero-btn ml-hero-btn--soon">Coming Soon</span>
+        )}
       </div>
       <div class="ml-hero-cover">
         <img src={heroBook.data.cover} alt={heroBook.data.title} />
@@ -100,10 +104,12 @@ const social = author.socialLinks ?? {};
               <div class="release-info">
                 <h3><mark>{book.data.title}</mark></h3>
                 <p class="blurb">{book.data.blurb}</p>
-                {book.data.buyLinks?.amazon && (
+                {book.data.buyLinks?.amazon ? (
                   <a href={book.data.buyLinks.amazon} class="btn btn-primary" target="_blank" rel="noopener">
                     Buy on Amazon
                   </a>
+                ) : (
+                  <span class="btn-soon">Coming Soon</span>
                 )}
               </div>
             </div>
@@ -155,10 +161,12 @@ const social = author.socialLinks ?? {};
                 <p class="book-card-blurb">
                   {book.data.blurb}
                 </p>
-                {book.data.buyLinks?.amazon && (
+                {book.data.buyLinks?.amazon ? (
                   <a href={book.data.buyLinks.amazon} class="btn btn-outline book-card-btn" target="_blank" rel="noopener">
                     Read on Amazon
                   </a>
+                ) : (
+                  <span class="btn-soon book-card-btn">Coming Soon</span>
                 )}
               </div>
             </div>
@@ -244,6 +252,18 @@ const social = author.socialLinks ?? {};
     border: none;
     border-radius: 4px;
     transition: background 0.2s, transform 0.2s;
+  }
+
+  :global(.ml-hero-btn--soon) {
+    background: transparent;
+    color: #8BB8E0;
+    border: 1px dashed #4a6b8c;
+    cursor: default;
+  }
+
+  :global(.ml-hero-btn--soon):hover {
+    background: transparent;
+    color: #8BB8E0;
   }
 
   :global(.ml-hero-btn):hover {
