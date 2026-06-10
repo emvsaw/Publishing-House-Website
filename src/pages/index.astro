@@ -12,12 +12,12 @@ const genres = [...new Set(allBooks.map(b => b.data.genre))].sort();
 const authorMap = Object.fromEntries(allAuthors.map(a => [a.data.slug, a.data]));
 ---
 
-<BaseLayout title="Linden Lane Press | Bold Stories, Unforgettable Voices">
+<BaseLayout title="Redwood Bay Press | Bold Stories, Unforgettable Voices">
 
   <!-- Hero -->
   <section class="hero">
     <div class="container">
-      <h1>Linden Lane Press</h1>
+      <h1>Redwood Bay Press</h1>
       <p class="tagline">Bold stories. Unforgettable voices.</p>
       <p class="mission">
         We're an indie publishing house championing fresh, heartfelt fiction across historical mystery,
@@ -108,7 +108,7 @@ const authorMap = Object.fromEntries(allAuthors.map(a => [a.data.slug, a.data]))
   <section class="newsletter-banner" id="newsletter">
     <div class="container">
       <h2>Stay in the Loop</h2>
-      <p>Subscribe to the Linden Lane Press newsletter for updates from our publisher and our authors.</p>
+      <p>Subscribe to the Redwood Bay Press newsletter for updates from our publisher and our authors.</p>
       <form id="main-newsletter-form">
         <input type="text" name="fields[name]" placeholder="Name" autocomplete="given-name" />
         <input type="email" name="fields[email]" placeholder="Email" autocomplete="email" required />
