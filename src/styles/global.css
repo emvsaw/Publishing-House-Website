@@ -1256,6 +1256,12 @@ h4 { font-size: 1.25rem; }
   color: #ffffff;
 }
 
+.al-home-logo {
+  height: 38px;
+  width: auto;
+  display: block;
+}
+
 .al-author-name {
   font-family: var(--font-heading);
   font-weight: 700;
