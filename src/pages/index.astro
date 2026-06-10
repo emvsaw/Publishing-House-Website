@@ -10,6 +10,24 @@ const genres = [...new Set(allBooks.map(b => b.data.genre))].sort();
 
 // Build a lookup for author names
 const authorMap = Object.fromEntries(allAuthors.map(a => [a.data.slug, a.data]));
+
+// Mix books across pens (round-robin) so genres alternate instead of clustering
+// by date. Within each pen, keep series order (earliest first).
+const booksByAuthor = new Map();
+for (const b of allBooks) {
+  if (!booksByAuthor.has(b.data.authorSlug)) booksByAuthor.set(b.data.authorSlug, []);
+  booksByAuthor.get(b.data.authorSlug).push(b);
+}
+for (const list of booksByAuthor.values()) {
+  list.sort((a, b) => new Date(a.data.releaseDate).getTime() - new Date(b.data.releaseDate).getTime());
+}
+const authorLists = [...booksByAuthor.values()];
+const mixedBooks = [];
+for (let i = 0; mixedBooks.length < allBooks.length; i++) {
+  for (const list of authorLists) {
+    if (list[i]) mixedBooks.push(list[i]);
+  }
+}
 ---
 
 <BaseLayout title="Redwood Bay Press | Bold Stories, Unforgettable Voices">
@@ -79,8 +97,7 @@ const authorMap = Object.fromEntries(allAuthors.map(a => [a.data.slug, a.data]))
 
       <!-- Book grid -->
       <div class="book-grid" id="book-grid">
-        {allBooks
-          .sort((a, b) => new Date(b.data.releaseDate).getTime() - new Date(a.data.releaseDate).getTime())
+        {mixedBooks
           .map(book => {
             const author = authorMap[book.data.authorSlug];
             return (
