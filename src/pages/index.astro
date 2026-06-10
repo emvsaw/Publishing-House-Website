@@ -11,20 +11,51 @@ const genres = [...new Set(allBooks.map(b => b.data.genre))].sort();
 // Build a lookup for author names
 const authorMap = Object.fromEntries(allAuthors.map(a => [a.data.slug, a.data]));
 
-// Mix books across pens (round-robin) so genres alternate instead of clustering
-// by date. Within each pen, keep series order (earliest first).
-const booksByAuthor = new Map();
+// Normalize paid books and free reader magnets into one card shape, then mix
+// across pens (round-robin) so genres alternate instead of clustering by date.
+// Within each pen: the free book first, then the series in order.
+const cardsByAuthor = new Map();
+const bucketFor = (slug) => {
+  if (!cardsByAuthor.has(slug)) cardsByAuthor.set(slug, { free: null, books: [] });
+  return cardsByAuthor.get(slug);
+};
+
+for (const a of allAuthors) {
+  if (a.data.freeBook) {
+    bucketFor(a.data.slug).free = {
+      kind: 'free',
+      title: a.data.freeBook.title,
+      cover: a.data.freeBook.cover,
+      authorSlug: a.data.slug,
+      genre: a.data.genres?.[0] ?? 'Free Book',
+      freeUrl: `/free/${a.data.slug}/`,
+    };
+  }
+}
 for (const b of allBooks) {
-  if (!booksByAuthor.has(b.data.authorSlug)) booksByAuthor.set(b.data.authorSlug, []);
-  booksByAuthor.get(b.data.authorSlug).push(b);
+  const bucket = bucketFor(b.data.authorSlug);
+  // A pen's reader magnet may also exist as a book file (e.g. a free prequel).
+  // Skip the paid-style card so it only shows once, as the free card.
+  if (bucket.free && bucket.free.title.trim().toLowerCase() === b.data.title.trim().toLowerCase()) continue;
+  bucket.books.push({
+    kind: 'book',
+    title: b.data.title,
+    cover: b.data.cover,
+    authorSlug: b.data.authorSlug,
+    genre: b.data.genre,
+    amazon: b.data.buyLinks?.amazon,
+    releaseDate: b.data.releaseDate,
+  });
 }
-for (const list of booksByAuthor.values()) {
-  list.sort((a, b) => new Date(a.data.releaseDate).getTime() - new Date(b.data.releaseDate).getTime());
-}
-const authorLists = [...booksByAuthor.values()];
+
+const authorCardLists = [...cardsByAuthor.values()].map(({ free, books }) => {
+  books.sort((a, b) => new Date(a.releaseDate).getTime() - new Date(b.releaseDate).getTime());
+  return free ? [free, ...books] : books;
+});
+const totalCards = authorCardLists.reduce((n, l) => n + l.length, 0);
 const mixedBooks = [];
-for (let i = 0; mixedBooks.length < allBooks.length; i++) {
-  for (const list of authorLists) {
+for (let i = 0; mixedBooks.length < totalCards; i++) {
+  for (const list of authorCardLists) {
     if (list[i]) mixedBooks.push(list[i]);
   }
 }
@@ -98,19 +129,22 @@ for (let i = 0; mixedBooks.length < allBooks.length; i++) {
       <!-- Book grid -->
       <div class="book-grid" id="book-grid">
         {mixedBooks
-          .map(book => {
-            const author = authorMap[book.data.authorSlug];
+          .map(card => {
+            const author = authorMap[card.authorSlug];
             return (
-              <div class="card book-card" data-genre={book.data.genre} data-author={book.data.authorSlug}>
+              <div class="card book-card" data-genre={card.genre} data-author={card.authorSlug}>
                 <div class="cover-wrap">
-                  <img src={book.data.cover} alt={book.data.title} loading="lazy" />
+                  {card.kind === 'free' && <span class="free-flag">Free</span>}
+                  <img src={card.cover} alt={card.title} loading="lazy" />
                 </div>
                 <div class="info">
-                  <h4>{book.data.title}</h4>
-                  <p class="author-name">{author?.name ?? book.data.authorSlug}</p>
-                  <span class="tag genre-tag">{book.data.genre}</span>
-                  {book.data.buyLinks?.amazon ? (
-                    <a href={book.data.buyLinks.amazon} class="btn btn-dark" target="_blank" rel="noopener">Buy on Amazon</a>
+                  <h4>{card.title}</h4>
+                  <p class="author-name">{author?.name ?? card.authorSlug}</p>
+                  <span class="tag genre-tag">{card.genre}</span>
+                  {card.kind === 'free' ? (
+                    <a href={card.freeUrl} class="btn btn-dark">Get It Free</a>
+                  ) : card.amazon ? (
+                    <a href={card.amazon} class="btn btn-dark" target="_blank" rel="noopener">Buy on Amazon</a>
                   ) : (
                     <span class="btn-soon">Coming Soon</span>
                   )}
