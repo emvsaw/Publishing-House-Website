@@ -2,7 +2,7 @@
 name: Celia Joly
 slug: celia-joly
 bio: "Celia Joly writes sapphic historical mysteries set in the art world of the 1920s. Her Authenticator series follows Toni von Treuenfels, an art authenticator with a sharp eye, a dry wit, and a dog of no provenance, from Berlin to Havana, through forgeries, family secrets, and the slow unhurried business of falling in love."
-photo: "/images/placeholder.png"
+photo: "/images/authors/celia-joly.svg"
 genres:
   - Historical Mystery
 socialLinks:

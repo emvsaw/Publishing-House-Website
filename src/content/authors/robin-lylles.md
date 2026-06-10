@@ -2,7 +2,7 @@
 name: Robin Lylles
 slug: robin-lylles
 bio: "Robin Lylles writes cozy mysteries soaked in Andalusian sunshine. In the Calablanca series, literature professor Goya Winters Sanchez inherits a creaky seaside pension, a judgmental cat named Manchita, and a fishing village full of secrets half a century deep. Slow-burn romance, strong coffee, no gore."
-photo: "/images/placeholder.png"
+photo: "/images/authors/robin-lylles.svg"
 genres:
   - Cozy Mystery
 socialLinks:
