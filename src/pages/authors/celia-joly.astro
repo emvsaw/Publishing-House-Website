@@ -11,8 +11,16 @@ const books = allBooks
   .sort((a, b) => new Date(b.data.releaseDate).getTime() - new Date(a.data.releaseDate).getTime());
 
 const heroBook = books.find(b => b.data.title === 'The Amarna Conspiracy') ?? books[0];
-const latestReleases = books.slice(0, 2);
-const remainingBooks = books.slice(2);
+const freeTitle = author.freeBook?.title?.trim().toLowerCase();
+const soonTitle = author.comingSoon?.title?.trim().toLowerCase();
+// Don't list a book that's already shown elsewhere: the hero banner, the reader
+// magnet opt-in bar, or the Coming Soon banner.
+const listable = books.filter(b => {
+  const t = b.data.title.trim().toLowerCase();
+  return b !== heroBook && t !== freeTitle && t !== soonTitle;
+});
+const latestReleases = listable.slice(0, 2);
+const remainingBooks = listable.slice(2);
 const social = author.socialLinks ?? {};
 ---
 
