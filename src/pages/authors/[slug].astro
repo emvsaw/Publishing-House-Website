@@ -21,8 +21,11 @@ export async function getStaticPaths() {
 }
 
 const { author, books } = Astro.props;
-const latestRelease = books[0];
-const remainingBooks = books.slice(1);
+// Lead with the featured book (e.g. a series Book 1) if one is marked, else the newest.
+const latestRelease = books.find(b => b.data.featured) ?? books[0];
+const remainingBooks = books
+  .filter(b => b.id !== latestRelease?.id)
+  .sort((a, b) => new Date(a.data.releaseDate).getTime() - new Date(b.data.releaseDate).getTime());
 const social = author.socialLinks ?? {};
 const theme = author.theme ?? null;
 ---
