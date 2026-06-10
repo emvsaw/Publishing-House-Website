@@ -59,9 +59,9 @@ const social = author.socialLinks ?? {};
     <div class="container">
       <div class="al-optin" id="newsletter">
         {author.freeBook && (
-          <div class="bm-freebook-cover">
+          <a class="bm-freebook-cover" href={`/free/${author.slug}/`} aria-label={`Get ${author.freeBook.title} free`}>
             <img src={author.freeBook.cover} alt={author.freeBook.title} loading="lazy" />
-          </div>
+          </a>
         )}
         <div class="al-optin-text">
           <h2><mark class="bm-highlight">Get {author.freeBook ? `"${author.freeBook.title}"` : 'a Free Book'} from {author.name}</mark></h2>

@@ -1,0 +1,189 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const authors = await getCollection('authors');
+  // A landing page is generated only for pens that have a free reader magnet.
+  return authors
+    .filter(a => a.data.freeBook)
+    .map(author => ({
+      params: { slug: author.data.slug },
+      props: { author: author.data },
+    }));
+}
+
+const { author } = Astro.props;
+const free = author.freeBook!;
+---
+
+<BaseLayout
+  title={`Free Book: ${free.title} | ${author.name}`}
+  description={`Get ${free.title} free from ${author.name}. ${free.blurb}`}
+>
+  <section class="rm">
+    <div class="container rm-inner">
+      <!-- Cover -->
+      <div class="rm-cover">
+        <span class="rm-badge">Free Book</span>
+        <img src={free.cover} alt={free.title} />
+      </div>
+
+      <!-- Text + signup -->
+      <div class="rm-content">
+        <p class="rm-eyebrow">A free gift from {author.name}</p>
+        <h1 class="rm-title">{free.title}</h1>
+        <p class="rm-blurb">{free.blurb}</p>
+
+        <form class="rm-form" data-action={author.newsletterFormAction ?? '#'}>
+          <input type="text" name="fields[name]" placeholder="First name" autocomplete="given-name" />
+          <input type="email" name="fields[email]" placeholder="Email address" autocomplete="email" required />
+          <button type="submit" class="btn btn-primary rm-btn">Send Me the Book</button>
+        </form>
+        <p class="rm-success" style="display:none;">Thank you! Check your inbox for your free book.</p>
+        <p class="rm-fineprint">
+          You'll join {author.name}'s reader list. No spam, unsubscribe anytime.
+        </p>
+
+        <p class="rm-back"><a href={`/authors/${author.slug}/`}>&larr; See all books by {author.name}</a></p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .rm {
+    background: linear-gradient(160deg, var(--color-cream, #faf6ef) 0%, #ffffff 100%);
+    padding: clamp(2.5rem, 6vw, 5rem) 0;
+  }
+
+  .rm-inner {
+    display: flex;
+    align-items: center;
+    gap: clamp(2rem, 5vw, 4.5rem);
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .rm-cover {
+    position: relative;
+    flex: 0 0 300px;
+    max-width: 300px;
+  }
+
+  .rm-cover img {
+    width: 100%;
+    display: block;
+    border-radius: 6px;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.25);
+  }
+
+  .rm-badge {
+    position: absolute;
+    top: -12px;
+    left: -12px;
+    z-index: 2;
+    background: var(--color-accent, #b1402f);
+    color: #ffffff;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.45rem 0.9rem;
+    border-radius: 999px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  }
+
+  .rm-content {
+    flex: 1 1 360px;
+    max-width: 540px;
+  }
+
+  .rm-eyebrow {
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-accent, #b1402f);
+    margin-bottom: 0.75rem;
+  }
+
+  .rm-title {
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    line-height: 1.1;
+    margin-bottom: 1.25rem;
+  }
+
+  .rm-blurb {
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    color: var(--color-text, #2a2a2a);
+    margin-bottom: 2rem;
+  }
+
+  .rm-form {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .rm-form input[type="text"],
+  .rm-form input[type="email"] {
+    flex: 1 1 180px;
+    padding: 0.85rem 1rem;
+    border: 1px solid #d6d0c4;
+    border-radius: 4px;
+    background: #ffffff;
+    font-size: 0.9375rem;
+  }
+
+  .rm-btn {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .rm-success {
+    font-weight: 600;
+    margin-top: 1rem;
+    color: var(--color-accent, #b1402f);
+  }
+
+  .rm-fineprint {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted, #6b6b6b);
+    margin-top: 1rem;
+  }
+
+  .rm-back {
+    margin-top: 2rem;
+    font-size: 0.9375rem;
+  }
+
+  @media (max-width: 640px) {
+    .rm-inner {
+      text-align: center;
+    }
+    .rm-form {
+      justify-content: center;
+    }
+    .rm-btn {
+      flex: 1 1 100%;
+    }
+  }
+</style>
+
+<script>
+  const form = document.querySelector('.rm-form') as HTMLFormElement;
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const action = form.dataset.action;
+    const formData = new FormData(form);
+    formData.append('ml-submit', '1');
+    formData.append('anticsrf', 'true');
+    try {
+      await fetch(action!, { method: 'POST', body: formData, mode: 'no-cors' });
+    } catch (_) {}
+    form.style.display = 'none';
+    document.querySelector('.rm-success')!.setAttribute('style', 'display:block;');
+  });
+</script>

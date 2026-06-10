@@ -39,9 +39,14 @@ const social = author.socialLinks ?? {};
   <div class="ml-optin-bar">
     <div class="container">
       <div class="al-optin" id="newsletter">
+        {author.freeBook && (
+          <a class="ml-freebook-cover" href={`/free/${author.slug}/`} aria-label={`Get ${author.freeBook.title} free`}>
+            <img src={author.freeBook.cover} alt={author.freeBook.title} loading="lazy" />
+          </a>
+        )}
         <div class="al-optin-text">
-          <h2><mark class="ml-optin-highlight">Get a Free Book from {author.name}</mark></h2>
-          <p>Join the mailing list for exclusive content, new release alerts, and the free Authenticator prequel.</p>
+          <h2><mark class="ml-optin-highlight">Get {author.freeBook ? `"${author.freeBook.title}"` : 'a Free Book'} from {author.name}</mark></h2>
+          <p>{author.freeBook?.blurb ?? 'Join the mailing list for exclusive content, new release alerts, and the free Authenticator prequel.'}</p>
         </div>
         <div class="al-optin-form-wrap">
           <form class="al-optin-form" data-action={author.newsletterFormAction ?? '#'}>
@@ -270,6 +275,25 @@ const social = author.socialLinks ?? {};
     background: transparent;
     border: none;
     padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  :global(.ml-freebook-cover) {
+    flex: 0 0 96px;
+  }
+
+  :global(.ml-freebook-cover) img {
+    width: 96px;
+    display: block;
+    border-radius: 4px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.45);
+  }
+
+  :global(.ml-optin-bar) .al-optin-text {
+    flex: 1 1 280px;
   }
 
   :global(.ml-optin-bar) .al-optin h2 {
