@@ -1,6 +1,6 @@
 ---
 title: "Harbor House"
-authorSlug: briana-wilde
+authorSlug: brianna-wilde
 genre: Omegaverse
 cover: "/images/placeholder.png"
 blurb: "Estate-fixer Marina Vale is hired to stabilize a scandal-rocked celebrity compound and its fractured five-alpha pack. The job description said nothing about becoming the center of it. Book 1 of Harbor House."
