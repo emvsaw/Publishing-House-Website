@@ -6,8 +6,8 @@ export async function getStaticPaths() {
   const authors = await getCollection('authors');
   const books = await getCollection('books');
 
-  // Kate Thomas has a dedicated landing page (kate-thomas.astro)
-  const filtered = authors.filter(a => !['kate-thomas', 'madison-lane', 'briar-morgan'].includes(a.data.slug));
+  // These pen names have dedicated landing pages (annie-wiest.astro, celia-joly.astro, robin-lylles.astro)
+  const filtered = authors.filter(a => !['annie-wiest', 'celia-joly', 'robin-lylles'].includes(a.data.slug));
 
   return filtered.map(author => ({
     params: { slug: author.data.slug },

@@ -5,9 +5,9 @@ import { getCollection } from 'astro:content';
 const allAuthors = await getCollection('authors');
 const allBooks = await getCollection('books');
 
-const author = allAuthors.find(a => a.data.slug === 'kate-thomas')!.data;
+const author = allAuthors.find(a => a.data.slug === 'annie-wiest')!.data;
 const books = allBooks
-  .filter(b => b.data.authorSlug === 'kate-thomas')
+  .filter(b => b.data.authorSlug === 'annie-wiest')
   .sort((a, b) => new Date(b.data.releaseDate).getTime() - new Date(a.data.releaseDate).getTime());
 
 const latestReleases = books.slice(0, 2);
@@ -15,7 +15,7 @@ const remainingBooks = books.slice(2);
 const social = author.socialLinks ?? {};
 ---
 
-<AuthorLandingLayout title={`${author.name} | Thriller Author`} description={`Books by ${author.name}. Dark secrets. Twisting plots. Endings you never see coming.`} authorName={author.name}>
+<AuthorLandingLayout title={`${author.name} | Sapphic Romance Author`} description={`Books by ${author.name}. Big skies. Found family. Love that comes home.`} authorName={author.name}>
 
   <!-- HERO: 3D Book Covers + Opt-in -->
   <section class="al-hero">
@@ -44,7 +44,7 @@ const social = author.socialLinks ?? {};
       <div class="al-optin" id="newsletter">
         <div class="al-optin-text">
           <h2><mark class="kt-highlight">Get a Free Book from {author.name}</mark></h2>
-          <p>Join the mailing list for exclusive content, new release alerts, and a free thriller.</p>
+          <p>Join the mailing list for exclusive content, new release alerts, and a free Sacred Peaks story.</p>
         </div>
         <div class="al-optin-form-wrap">
           <form class="al-optin-form" data-action={author.newsletterFormAction ?? '#'}>
