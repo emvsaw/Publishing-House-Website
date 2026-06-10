@@ -10,9 +10,9 @@ socialLinks:
   goodreads: "https://goodreads.com/robinlylles"
 newsletterFormAction: "https://assets.mailerlite.com/jsonp/YOUR_ACCOUNT_ID/forms/YOUR_FORM_ID/subscribe"
 freeBook:
-  title: "The Last Guest"
-  cover: "/images/placeholder.png"
-  blurb: "A German guest vanishes from Room 4 of the Pension Esperanza. The police shrug. Goya does not. The free Calablanca prequel, and the notebook that starts everything."
+  title: "The Villa's Last Guest"
+  cover: "/images/covers/robin-lylles/the-villas-last-guest.jpg"
+  blurb: "A German guest vanishes from the Pensión Esperanza. The police shrug. Goya does not. The free Calablanca prequel, and the notebook that starts everything."
   link: "https://bookfunnel.com/PLACEHOLDER"
 comingSoon:
   title: "Esperanza's Shadow"
