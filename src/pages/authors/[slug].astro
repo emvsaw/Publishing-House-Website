@@ -23,9 +23,9 @@ export async function getStaticPaths() {
 const { author, books } = Astro.props;
 // Lead with the featured book (e.g. a series Book 1) if one is marked, else the newest.
 const latestRelease = books.find(b => b.data.featured) ?? books[0];
-const remainingBooks = books
-  .filter(b => b.id !== latestRelease?.id)
-  .sort((a, b) => new Date(a.data.releaseDate).getTime() - new Date(b.data.releaseDate).getTime());
+const freeTitle = author.freeBook?.title?.trim().toLowerCase();
+// "All Books" = the complete catalogue (every title), in series order (oldest first).
+const fullCatalog = [...books].sort((a, b) => new Date(a.data.releaseDate).getTime() - new Date(b.data.releaseDate).getTime());
 const social = author.socialLinks ?? {};
 const theme = author.theme ?? null;
 ---
@@ -127,14 +127,14 @@ const theme = author.theme ?? null;
     )}
 
     <!-- Full Booklist -->
-    {remainingBooks.length > 0 && (
+    {fullCatalog.length > 0 && (
       <section class="section">
         <div class="section-title" style="text-align:left;">
           <span>All Books</span>
           <h2>By {author.name}</h2>
         </div>
         <div class="book-grid">
-          {remainingBooks.map(book => (
+          {fullCatalog.map(book => (
             <div class="card book-card">
               <div class="cover-wrap">
                 <img src={book.data.cover} alt={book.data.title} loading="lazy" />
@@ -145,7 +145,11 @@ const theme = author.theme ?? null;
                 <p class="book-card-blurb">
                   {book.data.blurb}
                 </p>
-                {book.data.buyLinks?.amazon ? (
+                {book.data.title.trim().toLowerCase() === freeTitle ? (
+                  <a href={`/free/${author.slug}/`} class="btn btn-outline book-card-btn">
+                    Get It Free
+                  </a>
+                ) : book.data.buyLinks?.amazon ? (
                   <a href={book.data.buyLinks.amazon} class="btn btn-outline book-card-btn" target="_blank" rel="noopener">
                     Read on Amazon
                   </a>
