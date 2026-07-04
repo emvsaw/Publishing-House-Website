@@ -5,9 +5,9 @@ import { getCollection } from 'astro:content';
 const allAuthors = await getCollection('authors');
 const allBooks = await getCollection('books');
 
-const author = allAuthors.find(a => a.data.slug === 'celia-joly')!.data;
+const author = allAuthors.find(a => a.data.slug === 'clara-regly')!.data;
 const books = allBooks
-  .filter(b => b.data.authorSlug === 'celia-joly')
+  .filter(b => b.data.authorSlug === 'clara-regly')
   .sort((a, b) => new Date(b.data.releaseDate).getTime() - new Date(a.data.releaseDate).getTime());
 
 const heroBook = books.find(b => b.data.title === 'The Amarna Conspiracy') ?? books[0];
