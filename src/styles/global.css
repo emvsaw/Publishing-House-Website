@@ -173,8 +173,8 @@ h4 { font-size: 1.25rem; }
 /* ── Hero ── */
 .hero {
   text-align: center;
-  padding: var(--space-xl) 0;
-  background: var(--color-bg-alt);
+  padding: var(--space-xl) 0 var(--space-md);
+  background: #d4f4f0;
   border-bottom: 1px solid var(--color-border);
 }
 
@@ -185,7 +185,7 @@ h4 { font-size: 1.25rem; }
   font-style: italic;
   font-size: 1.25rem;
   color: var(--color-text-muted);
-  margin-bottom: var(--space-md);
+  margin-bottom: var(--space-sm);
 }
 
 .hero .mission {
@@ -294,6 +294,11 @@ h4 { font-size: 1.25rem; }
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: var(--space-lg);
+}
+
+#authors.section {
+  padding-top: var(--space-lg);
+  padding-bottom: var(--space-md);
 }
 
 .author-card {
@@ -1485,6 +1490,9 @@ h4 { font-size: 1.25rem; }
 /* Sections */
 .al-section {
   padding: var(--space-xl) 0;
+}
+#books.section {
+  padding-top: var(--space-md);
 }
 
 .al-section-light {
