@@ -2,7 +2,7 @@
 name: Clara Regly
 slug: clara-regly
 bio: "Clara Regly writes sapphic historical mysteries set in the art world of the 1920s. Her Authenticator series follows Toni von Treuenfels, an art authenticator with a sharp eye, a dry wit, and a dog of no provenance, from Berlin to Havana, through forgeries, family secrets, and the slow unhurried business of falling in love."
-photo: "/images/authors/clara-regly.svg"
+photo: "/images/authors/clara-regly.jpg"
 genres:
   - Historical Mystery
 socialLinks:
