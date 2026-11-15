@@ -10,6 +10,6 @@ newsletterFormAction: "https://assets.mailerlite.com/jsonp/YOUR_ACCOUNT_ID/forms
 freeBook:
   title: "The Lock and the Ledger"
   cover: "/images/placeholder.png"
-  blurb: "Before Seraphina Sorrell ever set foot in Nico Valtier's compound, there was a ledger that shouldn't have existed, and the night someone tried to make sure no one ever found it. The free prequel novella to The Velvet Reckoning."
+  blurb: "When Seraphina confronts the syndicate's cold crime broker late at night in his private study, their high-stakes negotiation turns into an explosive collision of power, surrender, and dangerous temptation. The Lock and the Ledger, free bonus chapter to The Velvet Reckoning."
   link: "https://bookfunnel.com/PLACEHOLDER"
 ---
