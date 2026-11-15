@@ -36,19 +36,24 @@ const social = author.socialLinks ?? {};
     </div>
     <div class="vr-hero-inner container">
       <div class="vr-hero-text">
-        <h1 class="vr-hero-title">{heroBook.data.title}</h1>
+        <h1 class="vr-hero-title"><a href={`/books/${heroBook.id}/`}>{heroBook.data.title}</a></h1>
         <p class="vr-hero-tagline">Dangerous men. Darker bargains. Desire is the one contract nobody walks away from.</p>
         <p class="vr-hero-blurb">{heroBook.data.blurb}</p>
-        {heroBook.data.buyLinks?.amazon ? (
-          <a href={heroBook.data.buyLinks.amazon} class="vr-hero-btn" target="_blank" rel="noopener">
-            Start Reading
-          </a>
-        ) : (
-          <span class="vr-hero-btn vr-hero-btn--soon">Coming Soon</span>
-        )}
+        <div class="vr-hero-actions">
+          {heroBook.data.buyLinks?.amazon ? (
+            <a href={heroBook.data.buyLinks.amazon} class="vr-hero-btn" target="_blank" rel="noopener">
+              Start Reading
+            </a>
+          ) : (
+            <span class="vr-hero-btn vr-hero-btn--soon">Coming Soon</span>
+          )}
+          <a href={`/books/${heroBook.id}/`} class="vr-hero-link">Read More &rarr;</a>
+        </div>
       </div>
       <div class="vr-hero-cover">
-        <img src={heroBook.data.cover} alt={heroBook.data.title} />
+        <a href={`/books/${heroBook.id}/`}>
+          <img src={heroBook.data.cover} alt={heroBook.data.title} />
+        </a>
       </div>
     </div>
   </section>
@@ -112,19 +117,22 @@ const social = author.socialLinks ?? {};
         <div class="al-releases-grid">
           {latestReleases.map(book => (
             <div class="al-release-card">
-              <div class="cover-wrap">
+              <a href={`/books/${book.id}/`} class="cover-wrap">
                 <img src={book.data.cover} alt={book.data.title} loading="lazy" />
-              </div>
+              </a>
               <div class="release-info">
-                <h3><mark class="vr-highlight">{book.data.title}</mark></h3>
+                <h3><a href={`/books/${book.id}/`}><mark class="vr-highlight">{book.data.title}</mark></a></h3>
                 <p class="blurb">{book.data.blurb}</p>
-                {book.data.buyLinks?.amazon ? (
-                  <a href={book.data.buyLinks.amazon} class="btn btn-primary" target="_blank" rel="noopener">
-                    Buy on Amazon
-                  </a>
-                ) : (
-                  <span class="btn-soon">Coming Soon</span>
-                )}
+                <div class="vr-release-actions">
+                  {book.data.buyLinks?.amazon ? (
+                    <a href={book.data.buyLinks.amazon} class="btn btn-primary" target="_blank" rel="noopener">
+                      Buy on Amazon
+                    </a>
+                  ) : (
+                    <span class="btn-soon">Coming Soon</span>
+                  )}
+                  <a href={`/books/${book.id}/`} class="vr-release-link">Read More &rarr;</a>
+                </div>
               </div>
             </div>
           ))}
@@ -166,11 +174,11 @@ const social = author.socialLinks ?? {};
         <div class="book-grid">
           {fullCatalog.map(book => (
             <div class="card book-card">
-              <div class="cover-wrap">
+              <a href={`/books/${book.id}/`} class="cover-wrap">
                 <img src={book.data.cover} alt={book.data.title} loading="lazy" />
-              </div>
+              </a>
               <div class="info">
-                <h4>{book.data.title}</h4>
+                <h4><a href={`/books/${book.id}/`}>{book.data.title}</a></h4>
                 <span class="tag genre-tag">{book.data.genre}</span>
                 <p class="book-card-blurb">
                   {book.data.blurb}
@@ -184,7 +192,9 @@ const social = author.socialLinks ?? {};
                     Read on Amazon
                   </a>
                 ) : (
-                  <span class="btn-soon book-card-btn">Coming Soon</span>
+                  <a href={`/books/${book.id}/`} class="btn btn-outline book-card-btn">
+                    Read More
+                  </a>
                 )}
               </div>
             </div>
@@ -280,6 +290,34 @@ const social = author.socialLinks ?? {};
     margin-bottom: 0.75rem;
     letter-spacing: -0.02em;
     text-shadow: 0 2px 24px rgba(201, 162, 87, 0.25);
+  }
+
+  :global(.vr-hero-title) a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  :global(.vr-hero-title) a:hover {
+    color: #c9a257;
+  }
+
+  :global(.vr-hero-actions) {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  :global(.vr-hero-link) {
+    color: #d8cfc9;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  :global(.vr-hero-link):hover {
+    color: #c9a257;
   }
 
   :global(.vr-hero-tagline) {
@@ -423,6 +461,15 @@ const social = author.socialLinks ?? {};
     border-radius: 8px;
   }
 
+  /* Book card title links (All Books grid) */
+  :global(.book-card) .info h4 a {
+    color: inherit;
+    text-decoration: none;
+  }
+  :global(.book-card) .info h4 a:hover {
+    color: #7a1020;
+  }
+
   /* Black/gold/crimson accent overrides */
   :global(.al-section) .btn-primary {
     background: #1a1216;
@@ -532,9 +579,24 @@ const social = author.socialLinks ?? {};
     overflow: hidden;
   }
 
-  :global(.al-release-card) .release-info .btn {
+  :global(.vr-release-actions) {
     margin-top: auto;
-    align-self: flex-start;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  :global(.vr-release-link) {
+    color: #7a1020;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  :global(.vr-release-link):hover {
+    color: #1a1216;
   }
 
   /* Latest Releases highlight */
@@ -690,8 +752,8 @@ const social = author.socialLinks ?? {};
       align-items: center;
       text-align: center;
     }
-    :global(.al-release-card) .release-info .btn {
-      align-self: center;
+    :global(.vr-release-actions) {
+      justify-content: center;
     }
     :global(.al-bottom-nl-form) {
       flex-direction: column;

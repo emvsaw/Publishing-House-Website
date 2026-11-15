@@ -1,0 +1,168 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, getEntry, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const books = await getCollection('books');
+  return books.map(book => ({
+    params: { slug: book.id },
+    props: { book },
+  }));
+}
+
+const { book } = Astro.props;
+const author = await getEntry('authors', book.data.authorSlug);
+const { Content } = await render(book);
+---
+
+<BaseLayout
+  title={`${book.data.title} | ${author?.data.name ?? 'Redwood Bay Press'}`}
+  description={book.data.blurb}
+>
+  <section class="bd">
+    <div class="container bd-inner">
+      <div class="bd-cover">
+        <img src={book.data.cover} alt={book.data.title} />
+      </div>
+
+      <div class="bd-content">
+        {author && (
+          <p class="bd-eyebrow">
+            By <a href={`/authors/${author.data.slug}/`}>{author.data.name}</a>
+          </p>
+        )}
+        <h1 class="bd-title">{book.data.title}</h1>
+        <span class="tag genre-tag bd-genre">{book.data.genre}</span>
+
+        <div class="bd-blurb">
+          <Content />
+        </div>
+
+        {book.data.buyLinks?.amazon ? (
+          <a href={book.data.buyLinks.amazon} class="btn btn-primary bd-btn" target="_blank" rel="noopener">
+            Buy on Amazon
+          </a>
+        ) : (
+          <span class="btn-soon bd-btn">Coming Soon</span>
+        )}
+
+        {author && (
+          <p class="bd-back"><a href={`/authors/${author.data.slug}/`}>&larr; See all books by {author.data.name}</a></p>
+        )}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .bd {
+    padding: clamp(2.5rem, 6vw, 5rem) 0;
+  }
+
+  .bd-inner {
+    display: flex;
+    align-items: flex-start;
+    gap: clamp(2rem, 5vw, 4.5rem);
+    flex-wrap: wrap;
+  }
+
+  .bd-cover {
+    flex: 0 0 320px;
+    max-width: 320px;
+    position: sticky;
+    top: 2rem;
+  }
+
+  .bd-cover img {
+    width: 100%;
+    display: block;
+    border-radius: 6px;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.25);
+  }
+
+  .bd-content {
+    flex: 1 1 420px;
+    max-width: 640px;
+  }
+
+  .bd-eyebrow {
+    font-size: 0.9375rem;
+    color: var(--color-text-muted, #6b6b6b);
+    margin-bottom: 0.5rem;
+  }
+
+  .bd-eyebrow a {
+    font-weight: 600;
+  }
+
+  .bd-title {
+    font-size: clamp(2rem, 4.5vw, 2.75rem);
+    line-height: 1.1;
+    margin-bottom: 0.75rem;
+  }
+
+  .bd-genre {
+    display: inline-block;
+    margin-bottom: 1.5rem;
+  }
+
+  .bd-blurb {
+    font-size: 1.0625rem;
+    line-height: 1.8;
+    color: var(--color-text, #2a2a2a);
+    margin-bottom: 2rem;
+  }
+
+  .bd-blurb :global(p) {
+    margin-bottom: 1.25rem;
+  }
+
+  .bd-blurb :global(h3) {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 2rem 0 1rem;
+  }
+
+  .bd-blurb :global(ul) {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.25rem;
+  }
+
+  .bd-blurb :global(li) {
+    padding: 0.4rem 0;
+    border-bottom: 1px dashed var(--color-border, #e2ddd0);
+    font-size: 0.9375rem;
+  }
+
+  .bd-blurb :global(li:last-child) {
+    border-bottom: none;
+  }
+
+  .bd-btn {
+    display: inline-block;
+    margin-bottom: 2rem;
+  }
+
+  .bd-back {
+    font-size: 0.9375rem;
+  }
+
+  @media (max-width: 768px) {
+    .bd-cover {
+      position: static;
+      flex: none;
+      width: 220px;
+      margin: 0 auto;
+    }
+    .bd-inner {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .bd-blurb {
+      text-align: left;
+    }
+  }
+</style>
