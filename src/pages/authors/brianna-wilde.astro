@@ -1,0 +1,786 @@
+---
+import AuthorLandingLayout from '../../layouts/AuthorLandingLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allAuthors = await getCollection('authors');
+const allBooks = await getCollection('books');
+
+const author = allAuthors.find(a => a.data.slug === 'brianna-wilde')!.data;
+const books = allBooks
+  .filter(b => b.data.authorSlug === 'brianna-wilde')
+  .sort((a, b) => new Date(b.data.releaseDate).getTime() - new Date(a.data.releaseDate).getTime());
+
+const heroBook = books.find(b => b.data.featured) ?? books[0];
+const freeTitle = author.freeBook?.title?.trim().toLowerCase();
+const soonTitle = author.comingSoon?.title?.trim().toLowerCase();
+// Don't list a book that's already shown elsewhere: the hero banner, the reader
+// magnet opt-in bar, or the Coming Soon banner.
+const listable = books.filter(b => {
+  const t = b.data.title.trim().toLowerCase();
+  return b !== heroBook && t !== freeTitle && t !== soonTitle;
+});
+const latestReleases = listable.slice(0, 2);
+// "All Books" = the complete catalogue (every title), in series order (oldest first).
+const fullCatalog = [...books].sort((a, b) => new Date(a.data.releaseDate).getTime() - new Date(b.data.releaseDate).getTime());
+const social = author.socialLinks ?? {};
+---
+
+<AuthorLandingLayout title={`${author.name} | Dark Mafia Romance Author`} description={`Books by ${author.name}. Obsessive heroes, dangerous bargains, and romance with a body count, on the page, not off it.`} authorName={author.name}>
+
+  <!-- HERO: Featured Book Banner -->
+  <section class="vr-hero" id="books">
+    <div class="vr-hero-motif" aria-hidden="true">
+      <span class="vr-motif vr-motif--one">I</span>
+      <span class="vr-motif vr-motif--two">II</span>
+      <span class="vr-motif vr-motif--three">III</span>
+    </div>
+    <div class="vr-hero-inner container">
+      <div class="vr-hero-text">
+        <h1 class="vr-hero-title">{heroBook.data.title}</h1>
+        <p class="vr-hero-tagline">Dangerous men. Darker bargains. Love is the one contract nobody walks away from.</p>
+        <p class="vr-hero-blurb">{heroBook.data.blurb}</p>
+        {heroBook.data.buyLinks?.amazon ? (
+          <a href={heroBook.data.buyLinks.amazon} class="vr-hero-btn" target="_blank" rel="noopener">
+            Start Reading
+          </a>
+        ) : (
+          <span class="vr-hero-btn vr-hero-btn--soon">Coming Soon</span>
+        )}
+      </div>
+      <div class="vr-hero-cover">
+        <img src={heroBook.data.cover} alt={heroBook.data.title} />
+      </div>
+    </div>
+  </section>
+
+  <!-- Opt-in -->
+  <div class="vr-optin-bar">
+    <div class="container">
+      <div class="al-optin" id="newsletter">
+        {author.freeBook && (
+          <a class="vr-freebook-cover" href={`/free/${author.slug}/`} aria-label={`Get ${author.freeBook.title} free`}>
+            <img src={author.freeBook.cover} alt={author.freeBook.title} loading="lazy" />
+          </a>
+        )}
+        <div class="al-optin-text">
+          <h2>Get exclusive Velvet Reckoning content. <mark class="vr-optin-highlight">Join the family.</mark></h2>
+          <p>{author.freeBook?.blurb ?? "Join the mailing list for exclusive content, new release alerts, and early cover reveals."}</p>
+        </div>
+        <div class="al-optin-form-wrap">
+          <form class="al-optin-form" data-action={author.newsletterFormAction ?? '#'}>
+            <input type="text" name="fields[name]" placeholder="First name" autocomplete="given-name" />
+            <input type="email" name="fields[email]" placeholder="Email" autocomplete="email" required />
+            <button type="submit" class="btn al-btn-dark" style="white-space:nowrap;">Subscribe</button>
+          </form>
+          <p class="al-optin-success" style="display:none;">Thank you! Check your inbox.</p>
+          <p class="al-optin-privacy">Your information is safe. Unsubscribe anytime.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- About -->
+  <section class="al-section al-section-light" id="about">
+    <div class="container">
+      <div class="author-hero">
+        <img src={author.photo} alt={author.name} class="photo" loading="lazy" />
+        <div class="bio-box">
+          <h2>{author.name}</h2>
+          <div class="genre-list">
+            {author.genres.map(g => <span class="tag">{g}</span>)}
+          </div>
+          <p class="bio-text">{author.bio}</p>
+          <div class="social-links">
+            {social.instagram && <a href={social.instagram} target="_blank" rel="noopener">Instagram</a>}
+            {social.tiktok && <a href={social.tiktok} target="_blank" rel="noopener">TikTok</a>}
+            {social.facebook && <a href={social.facebook} target="_blank" rel="noopener">Facebook</a>}
+            {social.goodreads && <a href={social.goodreads} target="_blank" rel="noopener">Goodreads</a>}
+            {social.amazon && <a href={social.amazon} target="_blank" rel="noopener">Amazon</a>}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Latest Releases -->
+  {latestReleases.length > 0 && (
+    <section class="al-section al-latest-releases vr-latest-releases">
+      <div class="container">
+        <div class="section-title" style="text-align:left;">
+          <span>Latest Releases</span>
+        </div>
+        <div class="al-releases-grid">
+          {latestReleases.map(book => (
+            <div class="al-release-card">
+              <div class="cover-wrap">
+                <img src={book.data.cover} alt={book.data.title} loading="lazy" />
+              </div>
+              <div class="release-info">
+                <h3><mark class="vr-highlight">{book.data.title}</mark></h3>
+                <p class="blurb">{book.data.blurb}</p>
+                {book.data.buyLinks?.amazon ? (
+                  <a href={book.data.buyLinks.amazon} class="btn btn-primary" target="_blank" rel="noopener">
+                    Buy on Amazon
+                  </a>
+                ) : (
+                  <span class="btn-soon">Coming Soon</span>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Coming Soon -->
+  {author.comingSoon && (
+    <section class="al-preorder-banner vr-preorder-banner" style={`background-image: url(${author.comingSoon.cover});`}>
+      <div class="al-preorder-overlay vr-preorder-overlay"></div>
+      <div class="al-preorder-inner container">
+        <div class="al-preorder-cover">
+          <img src={author.comingSoon.cover} alt={author.comingSoon.title} />
+        </div>
+        <div class="al-preorder-content">
+          <span class="al-preorder-label vr-preorder-label">Coming Soon</span>
+          <h2 class="al-preorder-title">{author.comingSoon.title}</h2>
+          <p class="al-preorder-blurb">{author.comingSoon.blurb}</p>
+          {author.comingSoon.preorderLink && (
+            <a href={author.comingSoon.preorderLink} class="al-preorder-btn vr-preorder-btn" target="_blank" rel="noopener">
+              Pre-Order Now
+            </a>
+          )}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- All Books -->
+  {fullCatalog.length > 0 && (
+    <section class="al-section" id="all-books">
+      <div class="container">
+        <div class="section-title" style="text-align:left;">
+          <span>All Books</span>
+          <h2>By {author.name}</h2>
+        </div>
+        <div class="book-grid">
+          {fullCatalog.map(book => (
+            <div class="card book-card">
+              <div class="cover-wrap">
+                <img src={book.data.cover} alt={book.data.title} loading="lazy" />
+              </div>
+              <div class="info">
+                <h4>{book.data.title}</h4>
+                <span class="tag genre-tag">{book.data.genre}</span>
+                <p class="book-card-blurb">
+                  {book.data.blurb}
+                </p>
+                {book.data.title.trim().toLowerCase() === freeTitle ? (
+                  <a href={`/free/${author.slug}/`} class="btn btn-outline book-card-btn">
+                    Get It Free
+                  </a>
+                ) : book.data.buyLinks?.amazon ? (
+                  <a href={book.data.buyLinks.amazon} class="btn btn-outline book-card-btn" target="_blank" rel="noopener">
+                    Read on Amazon
+                  </a>
+                ) : (
+                  <span class="btn-soon book-card-btn">Coming Soon</span>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Bottom Newsletter -->
+  <section class="al-section al-bottom-newsletter vr-bottom-nl">
+    <div class="container">
+      <h2 class="al-bottom-nl-heading"><mark class="vr-highlight">Never Miss a New Bargain</mark></h2>
+      <p class="al-bottom-nl-desc">Join {author.name}'s mailing list for exclusive content, early cover reveals, and new release alerts delivered straight to your inbox.</p>
+      <form class="al-bottom-nl-form" data-action={author.newsletterFormAction ?? '#'}>
+        <input type="text" name="fields[name]" placeholder="Your first name" autocomplete="given-name" />
+        <input type="email" name="fields[email]" placeholder="Your email address" autocomplete="email" required />
+        <button type="submit" class="btn btn-primary" style="white-space:nowrap;">Subscribe</button>
+      </form>
+      <p class="al-bottom-nl-success" style="display:none;">Thank you! Check your inbox.</p>
+      <p class="al-bottom-nl-privacy">Your information is safe. Unsubscribe anytime.</p>
+    </div>
+  </section>
+
+</AuthorLandingLayout>
+
+<style>
+  /* ── Velvet Reckoning Theme (black + gold + crimson, from the series covers) ── */
+
+  /* Hero */
+  :global(.vr-hero) {
+    background: linear-gradient(150deg, #1a1216 0%, #0a0a0c 45%, #2a0d14 100%);
+    padding: 3rem 0;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Faint roman-numeral watermarks for the three books in the trilogy */
+  :global(.vr-hero-motif) {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  :global(.vr-motif) {
+    position: absolute;
+    font-family: Georgia, 'Times New Roman', serif;
+    line-height: 1;
+    color: #c9a257;
+  }
+
+  :global(.vr-motif--one) {
+    top: -8%;
+    right: -2%;
+    font-size: 26rem;
+    opacity: 0.07;
+  }
+
+  :global(.vr-motif--two) {
+    bottom: -14%;
+    left: -3%;
+    font-size: 22rem;
+    opacity: 0.06;
+  }
+
+  :global(.vr-motif--three) {
+    top: -3%;
+    left: 20%;
+    font-size: 10rem;
+    opacity: 0.045;
+  }
+
+  :global(.vr-hero-inner) {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  :global(.vr-hero-text) {
+    flex: 1;
+  }
+
+  :global(.vr-hero-title) {
+    font-family: 'Poppins', sans-serif;
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: #f4ece0;
+    line-height: 1.05;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.02em;
+    text-shadow: 0 2px 24px rgba(201, 162, 87, 0.25);
+  }
+
+  :global(.vr-hero-tagline) {
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #c9a257;
+    margin-bottom: 1.25rem;
+  }
+
+  :global(.vr-hero-blurb) {
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    color: #d8cfc9;
+    margin-bottom: 2rem;
+    max-width: 520px;
+  }
+
+  :global(.vr-hero-btn) {
+    display: inline-block;
+    padding: 1rem 3rem;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #1c1018;
+    background: linear-gradient(135deg, #d9bb84 0%, #c9a257 100%);
+    border: none;
+    border-radius: 4px;
+    transition: background 0.2s, transform 0.2s;
+  }
+
+  :global(.vr-hero-btn--soon) {
+    background: transparent;
+    color: #c9a257;
+    border: 1px dashed #6b5a3e;
+    cursor: default;
+  }
+
+  :global(.vr-hero-btn--soon):hover {
+    background: transparent;
+    color: #c9a257;
+    transform: none;
+  }
+
+  :global(.vr-hero-btn):hover {
+    background: #7a1020;
+    color: #f4ece0;
+    transform: translateY(-2px);
+  }
+
+  :global(.vr-hero-cover) {
+    flex: 0 0 300px;
+    align-self: center;
+  }
+
+  :global(.vr-hero-cover) img {
+    width: 300px;
+    display: block;
+    border-radius: 4px;
+    box-shadow: -8px 4px 40px rgba(122, 16, 32, 0.35), 0 4px 30px rgba(0,0,0,0.5);
+  }
+
+  /* Opt-in bar */
+  :global(.vr-optin-bar) {
+    background: #0a0a0c;
+    padding: 1.5rem 0;
+  }
+
+  :global(.vr-optin-bar) .al-optin {
+    background: transparent;
+    border: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  :global(.vr-freebook-cover) {
+    flex: 0 0 96px;
+  }
+
+  :global(.vr-freebook-cover) img {
+    width: 96px;
+    display: block;
+    border-radius: 4px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.45);
+  }
+
+  :global(.vr-optin-bar) .al-optin-text {
+    flex: 1 1 280px;
+  }
+
+  :global(.vr-optin-bar) .al-optin h2 {
+    color: #ffffff;
+  }
+
+  :global(.vr-optin-bar) .al-optin p {
+    color: #d8cfc9;
+  }
+
+  :global(.vr-optin-highlight) {
+    background: linear-gradient(to top, rgba(122, 16, 32, 0.5) 40%, transparent 40%);
+    color: inherit;
+    padding: 0 4px;
+  }
+
+  :global(.vr-optin-bar) .al-optin-form input[type="text"],
+  :global(.vr-optin-bar) .al-optin-form input[type="email"] {
+    background: rgba(201, 162, 87, 0.12);
+    border-color: #c9a257;
+    color: #ffffff;
+  }
+
+  :global(.vr-optin-bar) .al-optin-form input::placeholder {
+    color: #a69a93;
+  }
+
+  :global(.vr-optin-bar) .al-optin-privacy {
+    color: #a69a93 !important;
+  }
+
+  :global(.vr-optin-bar) .al-btn-dark {
+    background: #7a1020;
+    border-color: #7a1020;
+    color: #ffffff !important;
+  }
+
+  :global(.vr-optin-bar) .al-btn-dark:hover {
+    background: #c9a257;
+    border-color: #c9a257;
+    color: #1c1018 !important;
+  }
+
+  /* Profile photo */
+  .author-hero .photo {
+    border: none;
+    border-radius: 8px;
+  }
+
+  /* Black/gold/crimson accent overrides */
+  :global(.al-section) .btn-primary {
+    background: #1a1216;
+    color: #ffffff;
+  }
+  :global(.al-section) .btn-primary:hover {
+    background: #7a1020;
+    color: #ffffff;
+    border: 1px solid #7a1020;
+  }
+
+  :global(.al-section) .btn-outline {
+    border-color: #1a1216;
+    color: #1a1216;
+  }
+  :global(.al-section) .btn-outline:hover {
+    background: #1a1216;
+    color: #ffffff;
+  }
+
+  :global(.al-section) .tag:hover,
+  :global(.al-section) .tag.active {
+    background: #7a1020;
+    border-color: #7a1020;
+    color: #ffffff;
+  }
+
+  :global(.al-section) .section-title span {
+    color: #7a1020;
+  }
+
+  :global(.al-section) a {
+    color: #1a1216;
+  }
+  :global(.al-section) a:hover {
+    color: #7a1020;
+  }
+
+  /* Pre-order Banner */
+  :global(.vr-preorder-overlay) {
+    background: linear-gradient(
+      to bottom,
+      rgba(10, 10, 12, 0.85) 0%,
+      rgba(10, 10, 12, 0.9) 50%,
+      rgba(42, 13, 20, 0.95) 100%
+    ) !important;
+  }
+
+  :global(.vr-preorder-label) {
+    color: #c9a257 !important;
+  }
+
+  :global(.vr-preorder-btn) {
+    background: #7a1020 !important;
+    border: 2px solid #c9a257 !important;
+  }
+
+  :global(.vr-preorder-btn):hover {
+    background: #ffffff !important;
+    color: #1a1216 !important;
+    border-color: #ffffff !important;
+  }
+
+  /* Latest Releases */
+  :global(.al-releases-grid) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+  }
+
+  :global(.al-release-card) {
+    display: flex;
+    gap: 1.5rem;
+    align-items: stretch;
+  }
+
+  :global(.al-release-card) .cover-wrap {
+    flex: 0 0 160px;
+  }
+
+  :global(.al-release-card) .cover-wrap img {
+    width: 160px;
+    border-radius: 4px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  }
+
+  :global(.al-release-card) .release-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  :global(.al-release-card) .release-info h3 {
+    color: #1a1a1a;
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  :global(.al-release-card) .release-info .blurb {
+    color: #444444;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    margin-bottom: 1.25rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  :global(.al-release-card) .release-info .btn {
+    margin-top: auto;
+    align-self: flex-start;
+  }
+
+  /* Latest Releases highlight */
+  :global(.vr-highlight) {
+    background: linear-gradient(to top, rgba(122, 16, 32, 0.28) 40%, transparent 40%);
+    color: inherit;
+    padding: 0 4px;
+  }
+
+  :global(.vr-latest-releases) .section-title span::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 2px;
+    width: 100%;
+    height: 8px;
+    background: rgba(122, 16, 32, 0.2);
+    z-index: -1;
+  }
+
+  :global(.vr-latest-releases) .section-title span {
+    position: relative;
+    display: inline-block;
+  }
+
+  /* Scroll-to-top black/gold */
+  :global(.al-scroll-top) {
+    background: #1a1216 !important;
+    border-color: #1a1216 !important;
+    color: #ffffff !important;
+  }
+  :global(.al-scroll-top):hover {
+    background: #7a1020 !important;
+    border-color: #7a1020 !important;
+    color: #ffffff !important;
+  }
+
+  /* Bottom Newsletter — black like hero */
+  :global(.vr-bottom-nl) {
+    background: linear-gradient(150deg, #1a1216 0%, #0a0a0c 100%) !important;
+    text-align: center;
+  }
+
+  :global(.vr-bottom-nl) .al-bottom-nl-heading {
+    color: #ffffff;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  :global(.vr-bottom-nl) .al-bottom-nl-desc {
+    color: #d8cfc9;
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    margin-bottom: var(--space-md);
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  :global(.vr-bottom-nl) .al-bottom-nl-form {
+    display: flex;
+    gap: var(--space-xs);
+    max-width: 640px;
+    margin: 0 auto;
+    flex-direction: row;
+  }
+
+  :global(.vr-bottom-nl) .al-bottom-nl-form input[type="text"],
+  :global(.vr-bottom-nl) .al-bottom-nl-form input[type="email"] {
+    padding: 0.75rem 1rem;
+    border: 1px solid rgba(201, 162, 87, 0.4);
+    border-radius: 4px;
+    background: rgba(201, 162, 87, 0.12);
+    color: #ffffff;
+    font-size: 0.9375rem;
+    width: 100%;
+  }
+
+  :global(.vr-bottom-nl) .al-bottom-nl-form input::placeholder {
+    color: #a69a93;
+  }
+
+  :global(.vr-bottom-nl) .al-bottom-nl-form .btn-primary {
+    background: #c9a257;
+    color: #1c1018;
+    border-color: #c9a257;
+  }
+
+  :global(.vr-bottom-nl) .al-bottom-nl-form .btn-primary:hover {
+    background: #7a1020;
+    color: #ffffff;
+    border-color: #7a1020;
+  }
+
+  :global(.vr-bottom-nl) .al-bottom-nl-privacy {
+    font-size: 0.75rem !important;
+    color: #ffffff !important;
+    margin-top: var(--space-xs);
+    text-align: center;
+    margin-bottom: 0 !important;
+  }
+
+  @media (max-width: 768px) {
+    :global(.vr-hero-inner) {
+      flex-direction: column-reverse;
+      text-align: center;
+    }
+    :global(.vr-hero-text) {
+      padding-bottom: 2rem;
+    }
+    :global(.vr-hero-title) {
+      font-size: 2.25rem;
+    }
+    :global(.vr-hero-cover) {
+      flex: none;
+      width: 220px;
+    }
+    :global(.vr-hero-cover) img {
+      width: 220px;
+    }
+    :global(.vr-motif--one) {
+      font-size: 16rem;
+    }
+    :global(.vr-motif--two) {
+      font-size: 13rem;
+    }
+    :global(.vr-motif--three) {
+      font-size: 7rem;
+    }
+    :global(.al-preorder-banner) {
+      min-height: 400px;
+    }
+    :global(.al-preorder-inner) {
+      flex-direction: column;
+      text-align: center;
+    }
+    :global(.al-preorder-cover) {
+      flex: none;
+      width: 180px;
+    }
+    :global(.al-preorder-cover) img {
+      width: 180px;
+    }
+    :global(.al-preorder-title) {
+      font-size: 2rem;
+    }
+    :global(.al-releases-grid) {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    :global(.al-release-card) {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    :global(.al-release-card) .release-info .btn {
+      align-self: center;
+    }
+    :global(.al-bottom-nl-form) {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 480px) {
+    :global(.vr-hero) {
+      padding: 2rem 0;
+    }
+    :global(.vr-hero-inner) {
+      gap: 1.5rem;
+    }
+    :global(.vr-hero-title) {
+      font-size: 1.75rem;
+    }
+    :global(.vr-hero-tagline) {
+      font-size: 0.875rem;
+    }
+    :global(.vr-hero-blurb) {
+      font-size: 0.9375rem;
+    }
+    :global(.vr-hero-btn) {
+      padding: 0.75rem 2rem;
+      font-size: 0.875rem;
+    }
+    :global(.vr-hero-cover) {
+      width: 180px;
+    }
+    :global(.vr-hero-cover) img {
+      width: 180px;
+    }
+    :global(.al-preorder-banner) {
+      min-height: 320px;
+    }
+    :global(.al-preorder-title) {
+      font-size: 1.75rem;
+    }
+    :global(.al-preorder-label) {
+      font-size: 1.25rem;
+    }
+    :global(.al-preorder-blurb) {
+      font-size: 0.9375rem;
+    }
+    :global(.al-preorder-btn) {
+      padding: 0.75rem 2rem;
+      font-size: 0.875rem;
+    }
+    :global(.al-preorder-inner) {
+      gap: 1.5rem;
+      padding: 2rem 0;
+    }
+    :global(.al-preorder-cover) {
+      width: 150px;
+    }
+    :global(.al-preorder-cover) img {
+      width: 150px;
+    }
+    :global(.al-release-card) .cover-wrap {
+      flex: 0 0 130px;
+    }
+    :global(.al-release-card) .cover-wrap img {
+      width: 130px;
+    }
+    :global(.vr-optin-highlight),
+    :global(.vr-highlight) {
+      padding: 0 2px;
+    }
+  }
+</style>
+
+<script>
+  // Newsletter forms
+  function setupNlForm(formSelector: string, successSelector: string) {
+    const form = document.querySelector(formSelector) as HTMLFormElement;
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const action = form.dataset.action;
+      const formData = new FormData(form);
+      formData.append('ml-submit', '1');
+      formData.append('anticsrf', 'true');
+      try {
+        await fetch(action!, { method: 'POST', body: formData, mode: 'no-cors' });
+      } catch (_) {}
+      form.style.display = 'none';
+      document.querySelector(successSelector)!.setAttribute('style', 'display:block; color:#ffffff; font-weight:600; margin-top:var(--space-sm);');
+    });
+  }
+
+  setupNlForm('.al-optin-form', '.al-optin-success');
+  setupNlForm('.al-bottom-nl-form', '.al-bottom-nl-success');
+</script>

@@ -1,10 +1,15 @@
 ---
 name: Brianna Wilde
 slug: brianna-wilde
-bio: "Brianna Wilde writes romantasy and omegaverse romance where pack bonds run deep and nobody has to choose. Her Harbor House Pack series follows the omegas and alphas of a glittering California celebrity compound, where scandal, scent, and slow-built trust decide who belongs to whom. High heat, fierce loyalty, happily ever afters for the whole pack."
+bio: "Brianna Wilde writes dark mafia romance where power is currency and love is the one deal no one walks away from clean. Her Velvet Reckoning series follows the Valtier crime family and the women who refuse to be collateral: forensic accountants, disinherited heiresses, and rival heirs who trade ultimatums instead of vows. Obsessive heroes, dangerous bargains, high heat, and guaranteed happily-ever-afters, every time."
 photo: "/images/authors/brianna-wilde.jpg"
 genres:
-  - Romantasy
-  - Omegaverse
+  - Dark Romance
+  - Mafia Romance
 newsletterFormAction: "https://assets.mailerlite.com/jsonp/YOUR_ACCOUNT_ID/forms/YOUR_FORM_ID/subscribe"
+freeBook:
+  title: "The Lock and the Ledger"
+  cover: "/images/placeholder.png"
+  blurb: "Before Seraphina Sorrell ever set foot in Nico Valtier's compound, there was a ledger that shouldn't have existed, and the night someone tried to make sure no one ever found it. The free prequel novella to The Velvet Reckoning."
+  link: "https://bookfunnel.com/PLACEHOLDER"
 ---
