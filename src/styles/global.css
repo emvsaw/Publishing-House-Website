@@ -213,6 +213,7 @@ h4 { font-size: 1.25rem; }
   overflow: hidden;
   background: var(--color-bg-alt);
   position: relative;
+  display: block;
 }
 
 .book-card .free-flag {
@@ -247,6 +248,19 @@ h4 { font-size: 1.25rem; }
 .book-card .info h4 {
   font-size: 1rem;
   margin-bottom: 0.25rem;
+}
+
+.book-card .info h4 a,
+.latest-release .release-info h3 a,
+.al-release-card .release-info h3 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.book-card .info h4 a:hover,
+.latest-release .release-info h3 a:hover,
+.al-release-card .release-info h3 a:hover {
+  color: var(--color-accent);
 }
 
 .book-card .info .author-name {
@@ -538,6 +552,7 @@ h4 { font-size: 1.25rem; }
   overflow: hidden;
   aspect-ratio: 2/3;
   background: var(--color-border);
+  display: block;
 }
 
 .latest-release .cover-wrap img {
@@ -672,6 +687,7 @@ h4 { font-size: 1.25rem; }
   overflow: hidden;
   aspect-ratio: 2/3;
   background: rgba(255,255,255,0.15);
+  display: block;
 }
 
 .coming-soon-box .cover-wrap img {
@@ -688,6 +704,11 @@ h4 { font-size: 1.25rem; }
   color: #FFFFFF;
   margin-bottom: var(--space-sm);
   font-size: 1.5rem;
+}
+
+.coming-soon-box .cs-info h3 a {
+  color: inherit;
+  text-decoration: underline;
 }
 
 .coming-soon-box .cs-info .blurb {

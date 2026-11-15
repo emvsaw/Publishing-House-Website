@@ -23,6 +23,9 @@ const latestReleases = listable.slice(0, 2);
 // "All Books" = the complete catalogue (every title), in series order (oldest first).
 const fullCatalog = [...books].sort((a, b) => new Date(a.data.releaseDate).getTime() - new Date(b.data.releaseDate).getTime());
 const social = author.socialLinks ?? {};
+// The Coming Soon banner's cover is author frontmatter, but it usually also
+// exists as a real book entry — link to that book's page when it matches.
+const comingSoonBook = soonTitle ? books.find(b => b.data.title.trim().toLowerCase() === soonTitle) : undefined;
 ---
 
 <AuthorLandingLayout title={`${author.name} | Historical Mystery Author`} description={`Books by ${author.name}. Art, forgery, and quiet courage in 1920s Europe.`} authorName={author.name}>
@@ -31,19 +34,24 @@ const social = author.socialLinks ?? {};
   <section class="ml-hero" id="books">
     <div class="ml-hero-inner container">
       <div class="ml-hero-text">
-        <h1 class="ml-hero-title">{heroBook.data.title}</h1>
+        <h1 class="ml-hero-title"><a href={`/books/${heroBook.id}/`}>{heroBook.data.title}</a></h1>
         <p class="ml-hero-tagline">An authenticator with a sharp eye. A Europe full of beautiful lies.</p>
         <p class="ml-hero-blurb">{heroBook.data.blurb}</p>
-        {heroBook.data.buyLinks?.amazon ? (
-          <a href={heroBook.data.buyLinks.amazon} class="ml-hero-btn" target="_blank" rel="noopener">
-            Start Reading
-          </a>
-        ) : (
-          <span class="ml-hero-btn ml-hero-btn--soon">Coming Soon</span>
-        )}
+        <div class="ml-hero-actions">
+          {heroBook.data.buyLinks?.amazon ? (
+            <a href={heroBook.data.buyLinks.amazon} class="ml-hero-btn" target="_blank" rel="noopener">
+              Start Reading
+            </a>
+          ) : (
+            <span class="ml-hero-btn ml-hero-btn--soon">Coming Soon</span>
+          )}
+          <a href={`/books/${heroBook.id}/`} class="ml-hero-link">Read More &rarr;</a>
+        </div>
       </div>
       <div class="ml-hero-cover">
-        <img src={heroBook.data.cover} alt={heroBook.data.title} />
+        <a href={`/books/${heroBook.id}/`}>
+          <img src={heroBook.data.cover} alt={heroBook.data.title} />
+        </a>
       </div>
     </div>
   </section>
@@ -107,19 +115,22 @@ const social = author.socialLinks ?? {};
         <div class="al-releases-grid">
           {latestReleases.map(book => (
             <div class="al-release-card">
-              <div class="cover-wrap">
+              <a href={`/books/${book.id}/`} class="cover-wrap">
                 <img src={book.data.cover} alt={book.data.title} loading="lazy" />
-              </div>
+              </a>
               <div class="release-info">
-                <h3><mark>{book.data.title}</mark></h3>
+                <h3><a href={`/books/${book.id}/`}><mark>{book.data.title}</mark></a></h3>
                 <p class="blurb">{book.data.blurb}</p>
-                {book.data.buyLinks?.amazon ? (
-                  <a href={book.data.buyLinks.amazon} class="btn btn-primary" target="_blank" rel="noopener">
-                    Buy on Amazon
-                  </a>
-                ) : (
-                  <span class="btn-soon">Coming Soon</span>
-                )}
+                <div class="ml-release-actions">
+                  {book.data.buyLinks?.amazon ? (
+                    <a href={book.data.buyLinks.amazon} class="btn btn-primary" target="_blank" rel="noopener">
+                      Buy on Amazon
+                    </a>
+                  ) : (
+                    <span class="btn-soon">Coming Soon</span>
+                  )}
+                  <a href={`/books/${book.id}/`} class="ml-release-link">Read More &rarr;</a>
+                </div>
               </div>
             </div>
           ))}
@@ -133,12 +144,18 @@ const social = author.socialLinks ?? {};
     <section class="al-preorder-banner" style={`background-image: url(${author.comingSoon.cover});`}>
       <div class="al-preorder-overlay"></div>
       <div class="al-preorder-inner container">
-        <div class="al-preorder-cover">
-          <img src={author.comingSoon.cover} alt={author.comingSoon.title} />
-        </div>
+        {comingSoonBook ? (
+          <a href={`/books/${comingSoonBook.id}/`} class="al-preorder-cover">
+            <img src={author.comingSoon.cover} alt={author.comingSoon.title} />
+          </a>
+        ) : (
+          <div class="al-preorder-cover">
+            <img src={author.comingSoon.cover} alt={author.comingSoon.title} />
+          </div>
+        )}
         <div class="al-preorder-content">
           <span class="al-preorder-label">Coming Soon</span>
-          <h2 class="al-preorder-title">{author.comingSoon.title}</h2>
+          <h2 class="al-preorder-title">{comingSoonBook ? <a href={`/books/${comingSoonBook.id}/`}>{author.comingSoon.title}</a> : author.comingSoon.title}</h2>
           <p class="al-preorder-blurb">{author.comingSoon.blurb}</p>
           {author.comingSoon.preorderLink && (
             <a href={author.comingSoon.preorderLink} class="al-preorder-btn" target="_blank" rel="noopener">
@@ -159,31 +176,37 @@ const social = author.socialLinks ?? {};
           <h2>By {author.name}</h2>
         </div>
         <div class="book-grid">
-          {fullCatalog.map(book => (
-            <div class="card book-card">
-              <div class="cover-wrap">
-                <img src={book.data.cover} alt={book.data.title} loading="lazy" />
+          {fullCatalog.map(book => {
+            const isFree = book.data.title.trim().toLowerCase() === freeTitle;
+            const detailUrl = isFree ? `/free/${author.slug}/` : `/books/${book.id}/`;
+            return (
+              <div class="card book-card">
+                <a href={detailUrl} class="cover-wrap">
+                  <img src={book.data.cover} alt={book.data.title} loading="lazy" />
+                </a>
+                <div class="info">
+                  <h4><a href={detailUrl}>{book.data.title}</a></h4>
+                  <span class="tag genre-tag">{book.data.genre}</span>
+                  <p class="book-card-blurb">
+                    {book.data.blurb}
+                  </p>
+                  {isFree ? (
+                    <a href={`/free/${author.slug}/`} class="btn btn-outline book-card-btn">
+                      Get It Free
+                    </a>
+                  ) : book.data.buyLinks?.amazon ? (
+                    <a href={book.data.buyLinks.amazon} class="btn btn-outline book-card-btn" target="_blank" rel="noopener">
+                      Read on Amazon
+                    </a>
+                  ) : (
+                    <a href={detailUrl} class="btn btn-outline book-card-btn">
+                      Read More
+                    </a>
+                  )}
+                </div>
               </div>
-              <div class="info">
-                <h4>{book.data.title}</h4>
-                <span class="tag genre-tag">{book.data.genre}</span>
-                <p class="book-card-blurb">
-                  {book.data.blurb}
-                </p>
-                {book.data.title.trim().toLowerCase() === freeTitle ? (
-                  <a href={`/free/${author.slug}/`} class="btn btn-outline book-card-btn">
-                    Get It Free
-                  </a>
-                ) : book.data.buyLinks?.amazon ? (
-                  <a href={book.data.buyLinks.amazon} class="btn btn-outline book-card-btn" target="_blank" rel="noopener">
-                    Read on Amazon
-                  </a>
-                ) : (
-                  <span class="btn-soon book-card-btn">Coming Soon</span>
-                )}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
@@ -233,6 +256,59 @@ const social = author.socialLinks ?? {};
     line-height: 1.05;
     margin-bottom: 0.75rem;
     letter-spacing: -0.02em;
+  }
+
+  :global(.ml-hero-title) a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  :global(.ml-hero-title) a:hover {
+    color: #8BB8E0;
+  }
+
+  :global(.ml-hero-actions) {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  :global(.ml-hero-link) {
+    color: #ffffff;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  :global(.ml-hero-link):hover {
+    color: #8BB8E0;
+  }
+
+  :global(.ml-release-actions) {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  :global(.ml-release-link) {
+    color: #1B3A5C;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  :global(.ml-release-link):hover {
+    color: #153049;
+  }
+
+  :global(.al-preorder-title) a {
+    color: inherit;
+    text-decoration: underline;
   }
 
   :global(.ml-hero-tagline) {
@@ -557,11 +633,6 @@ const social = author.socialLinks ?? {};
     overflow: hidden;
   }
 
-  :global(.al-release-card) .release-info .btn {
-    margin-top: auto;
-    align-self: flex-start;
-  }
-
   :global(.al-latest-releases) .section-title span {
     position: relative;
     display: inline-block;
@@ -699,8 +770,8 @@ const social = author.socialLinks ?? {};
       align-items: center;
       text-align: center;
     }
-    :global(.al-release-card) .release-info .btn {
-      align-self: center;
+    :global(.ml-release-actions) {
+      justify-content: center;
     }
     :global(.al-bottom-nl-form) {
       flex-direction: column;

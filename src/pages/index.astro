@@ -29,6 +29,8 @@ for (const a of allAuthors) {
       authorSlug: a.data.slug,
       genre: a.data.genres?.[0] ?? 'Free Book',
       freeUrl: `/free/${a.data.slug}/`,
+      // The reader magnet's own landing page is the "corresponding page" to link to.
+      detailUrl: `/free/${a.data.slug}/`,
     };
   }
 }
@@ -45,6 +47,7 @@ for (const b of allBooks) {
     genre: b.data.genre,
     amazon: b.data.buyLinks?.amazon,
     releaseDate: b.data.releaseDate,
+    detailUrl: `/books/${b.id}/`,
   });
 }
 
@@ -125,12 +128,12 @@ for (let i = 0; mixedBooks.length < totalCards; i++) {
             const author = authorMap[card.authorSlug];
             return (
               <div class="card book-card" data-genre={card.genre} data-author={card.authorSlug}>
-                <div class="cover-wrap">
+                <a href={card.detailUrl} class="cover-wrap">
                   {card.kind === 'free' && <span class="free-flag">Free</span>}
                   <img src={card.cover} alt={card.title} loading="lazy" />
-                </div>
+                </a>
                 <div class="info">
-                  <h4>{card.title}</h4>
+                  <h4><a href={card.detailUrl}>{card.title}</a></h4>
                   <p class="author-name">{author?.name ?? card.authorSlug}</p>
                   <span class="tag genre-tag">{card.genre}</span>
                   {card.kind === 'free' ? (

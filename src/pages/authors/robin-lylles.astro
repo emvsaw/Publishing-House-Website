@@ -16,6 +16,10 @@ const freeTitle = author.freeBook?.title?.trim().toLowerCase();
 // "All Books" = the complete catalogue (every title), in series order (oldest first).
 const fullCatalog = [...books].sort((a, b) => new Date(a.data.releaseDate).getTime() - new Date(b.data.releaseDate).getTime());
 const social = author.socialLinks ?? {};
+// The Coming Soon banner's cover is author frontmatter, but it usually also
+// exists as a real book entry — link to that book's page when it matches.
+const soonTitle = author.comingSoon?.title?.trim().toLowerCase();
+const comingSoonBook = soonTitle ? books.find(b => b.data.title.trim().toLowerCase() === soonTitle) : undefined;
 ---
 
 <AuthorLandingLayout title={`${author.name} | Cozy Mystery Author`} description={`Books by ${author.name}. Seaside secrets. A creaky pension. Mysteries best enjoyed with strong coffee.`} authorName={author.name}>
@@ -27,19 +31,24 @@ const social = author.socialLinks ?? {};
         <div class={`bm-hero-slide ${i === 0 ? 'active' : ''}`} data-index={i}>
           <div class="bm-hero-inner container">
             <div class="bm-hero-text">
-              <h1 class="bm-hero-title">{book.data.title}</h1>
+              <h1 class="bm-hero-title"><a href={`/books/${book.id}/`}>{book.data.title}</a></h1>
               <p class="bm-hero-tagline">Sunshine, secrets, and murder on the Andalusian coast.</p>
               <p class="bm-hero-blurb">{book.data.blurb}</p>
-              {book.data.buyLinks?.amazon ? (
-                <a href={book.data.buyLinks.amazon} class="bm-hero-btn" target="_blank" rel="noopener">
-                  Start Reading
-                </a>
-              ) : (
-                <span class="bm-hero-btn bm-hero-btn--soon">Coming Soon</span>
-              )}
+              <div class="bm-hero-actions">
+                {book.data.buyLinks?.amazon ? (
+                  <a href={book.data.buyLinks.amazon} class="bm-hero-btn" target="_blank" rel="noopener">
+                    Start Reading
+                  </a>
+                ) : (
+                  <span class="bm-hero-btn bm-hero-btn--soon">Coming Soon</span>
+                )}
+                <a href={`/books/${book.id}/`} class="bm-hero-link">Read More &rarr;</a>
+              </div>
             </div>
             <div class="bm-hero-cover">
-              <img src={book.data.cover} alt={book.data.title} />
+              <a href={`/books/${book.id}/`}>
+                <img src={book.data.cover} alt={book.data.title} />
+              </a>
             </div>
           </div>
         </div>
@@ -119,19 +128,22 @@ const social = author.socialLinks ?? {};
         <div class="al-releases-grid">
           {latestReleases.map(book => (
             <div class="al-release-card">
-              <div class="cover-wrap">
+              <a href={`/books/${book.id}/`} class="cover-wrap">
                 <img src={book.data.cover} alt={book.data.title} loading="lazy" />
-              </div>
+              </a>
               <div class="release-info">
-                <h3><mark>{book.data.title}</mark></h3>
+                <h3><a href={`/books/${book.id}/`}><mark>{book.data.title}</mark></a></h3>
                 <p class="blurb">{book.data.blurb}</p>
-                {book.data.buyLinks?.amazon ? (
-                  <a href={book.data.buyLinks.amazon} class="btn btn-primary" target="_blank" rel="noopener">
-                    Buy on Amazon
-                  </a>
-                ) : (
-                  <span class="btn-soon">Coming Soon</span>
-                )}
+                <div class="bm-release-actions">
+                  {book.data.buyLinks?.amazon ? (
+                    <a href={book.data.buyLinks.amazon} class="btn btn-primary" target="_blank" rel="noopener">
+                      Buy on Amazon
+                    </a>
+                  ) : (
+                    <span class="btn-soon">Coming Soon</span>
+                  )}
+                  <a href={`/books/${book.id}/`} class="bm-release-link">Read More &rarr;</a>
+                </div>
               </div>
             </div>
           ))}
@@ -145,12 +157,18 @@ const social = author.socialLinks ?? {};
     <section class="al-preorder-banner" style={`background-image: url(${author.comingSoon.cover});`}>
       <div class="al-preorder-overlay"></div>
       <div class="al-preorder-inner container">
-        <div class="al-preorder-cover">
-          <img src={author.comingSoon.cover} alt={author.comingSoon.title} />
-        </div>
+        {comingSoonBook ? (
+          <a href={`/books/${comingSoonBook.id}/`} class="al-preorder-cover">
+            <img src={author.comingSoon.cover} alt={author.comingSoon.title} />
+          </a>
+        ) : (
+          <div class="al-preorder-cover">
+            <img src={author.comingSoon.cover} alt={author.comingSoon.title} />
+          </div>
+        )}
         <div class="al-preorder-content">
           <span class="al-preorder-label">Coming Soon</span>
-          <h2 class="al-preorder-title">{author.comingSoon.title}</h2>
+          <h2 class="al-preorder-title">{comingSoonBook ? <a href={`/books/${comingSoonBook.id}/`}>{author.comingSoon.title}</a> : author.comingSoon.title}</h2>
           <p class="al-preorder-blurb">{author.comingSoon.blurb}</p>
           {author.comingSoon.preorderLink && (
             <a href={author.comingSoon.preorderLink} class="al-preorder-btn" target="_blank" rel="noopener">
@@ -171,18 +189,21 @@ const social = author.socialLinks ?? {};
           <h2>By {author.name}</h2>
         </div>
         <div class="book-grid">
-          {fullCatalog.map(book => (
+          {fullCatalog.map(book => {
+            const isFree = book.data.title.trim().toLowerCase() === freeTitle;
+            const detailUrl = isFree ? `/free/${author.slug}/` : `/books/${book.id}/`;
+            return (
             <div class="card book-card">
-              <div class="cover-wrap">
+              <a href={detailUrl} class="cover-wrap">
                 <img src={book.data.cover} alt={book.data.title} loading="lazy" />
-              </div>
+              </a>
               <div class="info">
-                <h4>{book.data.title}</h4>
+                <h4><a href={detailUrl}>{book.data.title}</a></h4>
                 <span class="tag genre-tag">{book.data.genre}</span>
                 <p class="book-card-blurb">
                   {book.data.blurb}
                 </p>
-                {book.data.title.trim().toLowerCase() === freeTitle ? (
+                {isFree ? (
                   <a href={`/free/${author.slug}/`} class="btn btn-outline book-card-btn">
                     Get It Free
                   </a>
@@ -191,11 +212,14 @@ const social = author.socialLinks ?? {};
                     Read on Amazon
                   </a>
                 ) : (
-                  <span class="btn-soon book-card-btn">Coming Soon</span>
+                  <a href={detailUrl} class="btn btn-outline book-card-btn">
+                    Read More
+                  </a>
                 )}
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
@@ -328,6 +352,59 @@ const social = author.socialLinks ?? {};
     line-height: 1.05;
     margin-bottom: 0.75rem;
     letter-spacing: -0.02em;
+  }
+
+  :global(.bm-hero-title) a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  :global(.bm-hero-title) a:hover {
+    color: #B8A0D2;
+  }
+
+  :global(.bm-hero-actions) {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  :global(.bm-hero-link) {
+    color: #ffffff;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  :global(.bm-hero-link):hover {
+    color: #B8A0D2;
+  }
+
+  :global(.bm-release-actions) {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  :global(.bm-release-link) {
+    color: #2D1B4E;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  :global(.bm-release-link):hover {
+    color: #1b1030;
+  }
+
+  :global(.al-preorder-title) a {
+    color: inherit;
+    text-decoration: underline;
   }
 
   :global(.bm-hero-tagline) {
