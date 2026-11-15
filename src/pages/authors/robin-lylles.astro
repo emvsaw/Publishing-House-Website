@@ -10,9 +10,12 @@ const books = allBooks
   .filter(b => b.data.authorSlug === 'robin-lylles')
   .sort((a, b) => new Date(b.data.releaseDate).getTime() - new Date(a.data.releaseDate).getTime());
 
-const heroBooks = books.slice(0, 5); // top 5 for hero carousel
-const latestReleases = books.slice(0, 2);
 const freeTitle = author.freeBook?.title?.trim().toLowerCase();
+// The free reader magnet gets its own opt-in bar and "Get It Free" card;
+// keep it out of the hero carousel and Latest Releases.
+const nonFreeBooks = books.filter(b => b.data.title.trim().toLowerCase() !== freeTitle);
+const heroBooks = nonFreeBooks.slice(0, 5); // top 5 for hero carousel
+const latestReleases = nonFreeBooks.slice(0, 2);
 // "All Books" = the complete catalogue (every title), in series order (oldest first).
 const fullCatalog = [...books].sort((a, b) => new Date(a.data.releaseDate).getTime() - new Date(b.data.releaseDate).getTime());
 const social = author.socialLinks ?? {};
