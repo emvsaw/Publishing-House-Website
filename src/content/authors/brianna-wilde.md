@@ -8,9 +8,9 @@ genres:
   - Mafia Romance
 newsletterFormAction: "https://assets.mailerlite.com/jsonp/YOUR_ACCOUNT_ID/forms/YOUR_FORM_ID/subscribe"
 freeBook:
-  title: "The Lock and the Ledger"
-  cover: "/images/covers/brianna-wilde/the-lock-and-the-ledger.jpg"
-  blurb: "When Seraphina confronts the syndicate's cold crime broker late at night in his private study, their high-stakes negotiation turns into an explosive collision of power, surrender, and dangerous temptation. The Lock and the Ledger, free bonus chapter to The Velvet Reckoning."
+  title: "Rule Number Four"
+  cover: "/images/covers/brianna-wilde/rule-number-four.jpg"
+  blurb: "When Seraphina confronts the syndicate's cold crime broker late at night in his private study, their high-stakes negotiation turns into an explosive collision of power, surrender, and dangerous temptation. Rule Number Four, a free bonus novella set in The Velvet Reckoning world."
   fullBlurb:
     - "Trapped inside a heavily fortified mafia compound during a relentless rainstorm, forensic accountant Seraphina Sorrell knows she needs strict boundaries to survive Nico Valtier."
     - "She has a locked door, a legal pad of rules, and a knife in her sleeve."
