@@ -33,7 +33,22 @@ const free = author.freeBook!;
       <div class="rm-content">
         <p class="rm-eyebrow">A free gift from {author.name}</p>
         <h1 class="rm-title">{free.title}</h1>
-        <p class="rm-blurb">{free.blurb}</p>
+
+        {free.fullBlurb ? (
+          <div class="rm-blurb-full">
+            {free.fullBlurb.map(p => <p class="rm-blurb">{p}</p>)}
+            {free.bullets && free.bullets.length > 0 && (
+              <>
+                <p class="rm-bullets-label">Inside this exclusive bonus:</p>
+                <ul class="rm-bullets">
+                  {free.bullets.map(b => <li>{b}</li>)}
+                </ul>
+              </>
+            )}
+          </div>
+        ) : (
+          <p class="rm-blurb">{free.blurb}</p>
+        )}
 
         <form class="rm-form" data-action={author.newsletterFormAction ?? '#'}>
           <input type="text" name="fields[name]" placeholder="First name" autocomplete="given-name" />
@@ -119,6 +134,36 @@ const free = author.freeBook!;
     line-height: 1.75;
     color: var(--color-text, #2a2a2a);
     margin-bottom: 2rem;
+  }
+
+  .rm-blurb-full {
+    margin-bottom: 2rem;
+  }
+
+  .rm-blurb-full .rm-blurb {
+    margin-bottom: 1.1rem;
+  }
+
+  .rm-bullets-label {
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+  }
+
+  .rm-bullets {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .rm-bullets li {
+    padding: 0.4rem 0;
+    border-bottom: 1px dashed var(--color-border, #e2ddd0);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  .rm-bullets li:last-child {
+    border-bottom: none;
   }
 
   .rm-form {

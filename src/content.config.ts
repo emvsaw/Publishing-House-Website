@@ -25,6 +25,10 @@ const authors = defineCollection({
       cover: z.string(),
       blurb: z.string(),
       link: z.string(),
+      // Optional longer-form copy for the dedicated /free/[slug]/ landing page.
+      // `blurb` above stays short for compact previews (opt-in bar, cards).
+      fullBlurb: z.array(z.string()).optional(),
+      bullets: z.array(z.string()).optional(),
     }).optional(),
     theme: z.string().optional(),
     comingSoon: z.object({
