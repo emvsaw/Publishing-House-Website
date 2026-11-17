@@ -396,6 +396,25 @@ h4 { font-size: 1.25rem; }
   color: var(--color-accent);
 }
 
+/* Kit's publisher-wide form stays on the page and follows the banner palette. */
+.rbp-kit-form .formkit-form[data-uid="4a289ed41e"] {
+  max-width: 620px !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.rbp-kit-form .formkit-form[data-uid="4a289ed41e"] .formkit-submit {
+  background: #ffffff !important;
+  color: var(--color-accent) !important;
+}
+
+.rbp-kit-form .formkit-form[data-uid="4a289ed41e"] .formkit-submit:hover {
+  background: rgba(255,255,255,0.9) !important;
+}
+
 /* ── Newsletter (boxed, for author pages) ── */
 .newsletter {
   background: var(--color-bg-alt);
