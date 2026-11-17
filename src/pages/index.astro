@@ -157,12 +157,7 @@ for (let i = 0; mixedBooks.length < totalCards; i++) {
     <div class="container">
       <h2>Stay in the Loop</h2>
       <p>Subscribe to the Redwood Bay Press newsletter for updates from our publisher and our authors.</p>
-      <form id="main-newsletter-form">
-        <input type="text" name="fields[name]" placeholder="Name" autocomplete="given-name" />
-        <input type="email" name="fields[email]" placeholder="Email" autocomplete="email" required />
-        <button type="submit" class="btn btn-primary" style="white-space:nowrap;">Get Updates</button>
-      </form>
-      <p id="newsletter-success" style="display:none; color:var(--color-white); font-weight:600; margin-top:var(--space-sm);">Thank you! You're on the list.</p>
+      <a href="https://redwood-bay-press.kit.com/4a289ed41e" class="btn btn-primary" target="_blank" rel="noopener">Get Updates</a>
     </div>
   </section>
 
@@ -203,21 +198,4 @@ for (let i = 0; mixedBooks.length < totalCards; i++) {
     });
   });
 
-  // ── Newsletter submit ──
-  const nlForm = document.getElementById('main-newsletter-form') as HTMLFormElement;
-  nlForm?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const formData = new FormData(nlForm);
-    formData.append('ml-submit', '1');
-    formData.append('anticsrf', 'true');
-    try {
-      await fetch('https://assets.mailerlite.com/jsonp/YOUR_ACCOUNT_ID/forms/YOUR_FORM_ID/subscribe', {
-        method: 'POST',
-        body: formData,
-        mode: 'no-cors',
-      });
-    } catch (_) {}
-    nlForm.style.display = 'none';
-    document.getElementById('newsletter-success')!.style.display = 'block';
-  });
 </script>
