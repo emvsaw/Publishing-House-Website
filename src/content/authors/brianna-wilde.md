@@ -6,19 +6,20 @@ photo: "/images/authors/brianna-wilde.jpg"
 genres:
   - Dark Romance
   - Mafia Romance
-newsletterFormAction: "https://assets.mailerlite.com/jsonp/YOUR_ACCOUNT_ID/forms/YOUR_FORM_ID/subscribe"
+newsletterFormAction: "https://dl.bookfunnel.com/eos73cu24c"
 freeBook:
   title: "Rule Number Four"
   cover: "/images/covers/brianna-wilde/rule-number-four.jpg"
-  blurb: "When Seraphina confronts the syndicate's cold crime broker late at night in his private study, their high-stakes negotiation turns into an explosive collision of power, surrender, and dangerous temptation. Rule Number Four, a free bonus novella set in The Velvet Reckoning world."
+  blurb: "Seraphina came to Nico Valtier's guarded compound with four rules. The last one forbids him from touching her. Get a free, explicit alternate encounter from The Velvet Reckoning."
   fullBlurb:
-    - "Trapped inside a heavily fortified mafia compound during a relentless rainstorm, forensic accountant Seraphina Sorrell knows she needs strict boundaries to survive Nico Valtier."
-    - "She has a locked door, a legal pad of rules, and a knife in her sleeve."
-    - "He has the compound, the enforcers, and an obsession with her safety that borders on lethal."
-    - "When Seraphina confronts the syndicate's cold crime broker late at night in his private study, their high-stakes negotiation turns into an explosive collision of power, surrender, and dangerous temptation."
+    - "Seraphina came to Nico Valtier's guarded compound with four rules. The last one forbids him from touching her."
+    - "When she finds the dangerous crime broker alone in his study, their negotiation turns personal. She knows how much power Nico holds. She also knows exactly which choice is hers to make."
+    - "Step into a dark mafia romance world of forced proximity, sharp bargains, and explicit heat."
+    - "This is an alternate encounter featuring the couple from A Bargain Written in Ash. It takes place outside the novel's events, so you can enjoy it before Book 1 without spoiling their full story."
+    - "For adult readers. Contains explicit sexual content and organized crime themes."
   bullets:
-    - "🔥 High-heat, open-door romance (5/5 steam rating)"
-    - "🔥 Deep forced proximity & possessive \"falls-first\" hero"
-    - "🔥 Spoiler-free prequel/deleted scene set in The Velvet Reckoning world"
-  link: "https://bookfunnel.com/PLACEHOLDER"
+    - "Dark mafia romance and forced proximity"
+    - "An explicit alternate encounter with Nico and Seraphina"
+    - "Read before Book 1 without spoiling its ending"
+  link: "https://dl.bookfunnel.com/eos73cu24c"
 ---

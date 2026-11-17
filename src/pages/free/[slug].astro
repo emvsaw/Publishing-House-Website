@@ -50,12 +50,18 @@ const free = author.freeBook!;
           <p class="rm-blurb">{free.blurb}</p>
         )}
 
-        <form class="rm-form" data-action={author.newsletterFormAction ?? '#'}>
-          <input type="text" name="fields[name]" placeholder="First name" autocomplete="given-name" />
-          <input type="email" name="fields[email]" placeholder="Email address" autocomplete="email" required />
-          <button type="submit" class="btn btn-primary rm-btn">Send Me the Book</button>
-        </form>
-        <p class="rm-success" style="display:none;">Thank you! Check your inbox for your free book.</p>
+        {author.slug === 'brianna-wilde' ? (
+          <a class="btn btn-primary rm-btn" href={free.link} target="_blank" rel="noopener">Get the Free Story</a>
+        ) : (
+          <>
+            <form class="rm-form" data-action={author.newsletterFormAction ?? '#'}>
+              <input type="text" name="fields[name]" placeholder="First name" autocomplete="given-name" />
+              <input type="email" name="fields[email]" placeholder="Email address" autocomplete="email" required />
+              <button type="submit" class="btn btn-primary rm-btn">Send Me the Book</button>
+            </form>
+            <p class="rm-success" style="display:none;">Thank you! Check your inbox for your free book.</p>
+          </>
+        )}
         <p class="rm-fineprint">
           You'll join {author.name}'s reader list. No spam, unsubscribe anytime.
         </p>

@@ -42,7 +42,7 @@ const social = author.socialLinks ?? {};
         <div class="vr-hero-actions">
           {heroBook.data.buyLinks?.amazon ? (
             <a href={heroBook.data.buyLinks.amazon} class="vr-hero-btn" target="_blank" rel="noopener">
-              Start Reading
+              See on Amazon
             </a>
           ) : (
             <span class="vr-hero-btn vr-hero-btn--soon">Coming Soon</span>
@@ -72,12 +72,7 @@ const social = author.socialLinks ?? {};
           <p>{author.freeBook?.blurb ?? "Join the mailing list for exclusive content, new release alerts, and early cover reveals."}</p>
         </div>
         <div class="al-optin-form-wrap">
-          <form class="al-optin-form" data-action={author.newsletterFormAction ?? '#'}>
-            <input type="text" name="fields[name]" placeholder="First name" autocomplete="given-name" />
-            <input type="email" name="fields[email]" placeholder="Email" autocomplete="email" required />
-            <button type="submit" class="btn al-btn-dark" style="white-space:nowrap;">Subscribe</button>
-          </form>
-          <p class="al-optin-success" style="display:none;">Thank you! Check your inbox.</p>
+          <a class="btn al-btn-dark" href={author.newsletterFormAction} target="_blank" rel="noopener">Subscribe</a>
           <p class="al-optin-privacy">Your information is safe. Unsubscribe anytime.</p>
         </div>
       </div>
@@ -126,7 +121,7 @@ const social = author.socialLinks ?? {};
                 <div class="vr-release-actions">
                   {book.data.buyLinks?.amazon ? (
                     <a href={book.data.buyLinks.amazon} class="btn btn-primary" target="_blank" rel="noopener">
-                      Buy on Amazon
+                      See on Amazon
                     </a>
                   ) : (
                     <span class="btn-soon">Coming Soon</span>
@@ -155,7 +150,7 @@ const social = author.socialLinks ?? {};
           <p class="al-preorder-blurb">{author.comingSoon.blurb}</p>
           {author.comingSoon.preorderLink && (
             <a href={author.comingSoon.preorderLink} class="al-preorder-btn vr-preorder-btn" target="_blank" rel="noopener">
-              Pre-Order Now
+              See on Amazon
             </a>
           )}
         </div>
@@ -189,7 +184,7 @@ const social = author.socialLinks ?? {};
                   </a>
                 ) : book.data.buyLinks?.amazon ? (
                   <a href={book.data.buyLinks.amazon} class="btn btn-outline book-card-btn" target="_blank" rel="noopener">
-                    Read on Amazon
+                    See on Amazon
                   </a>
                 ) : (
                   <a href={`/books/${book.id}/`} class="btn btn-outline book-card-btn">
@@ -209,12 +204,7 @@ const social = author.socialLinks ?? {};
     <div class="container">
       <h2 class="al-bottom-nl-heading"><mark class="vr-highlight">Never Miss a New Bargain</mark></h2>
       <p class="al-bottom-nl-desc">Join {author.name}'s mailing list for exclusive content, early cover reveals, and new release alerts delivered straight to your inbox.</p>
-      <form class="al-bottom-nl-form" data-action={author.newsletterFormAction ?? '#'}>
-        <input type="text" name="fields[name]" placeholder="Your first name" autocomplete="given-name" />
-        <input type="email" name="fields[email]" placeholder="Your email address" autocomplete="email" required />
-        <button type="submit" class="btn btn-primary" style="white-space:nowrap;">Subscribe</button>
-      </form>
-      <p class="al-bottom-nl-success" style="display:none;">Thank you! Check your inbox.</p>
+      <a class="btn btn-primary" href={author.newsletterFormAction} target="_blank" rel="noopener">Get the Free Story &amp; Subscribe</a>
       <p class="al-bottom-nl-privacy">Your information is safe. Unsubscribe anytime.</p>
     </div>
   </section>
@@ -444,8 +434,8 @@ const social = author.socialLinks ?? {};
   }
 
   :global(.vr-optin-bar) .al-btn-dark {
-    background: #7a1020;
-    border-color: #7a1020;
+    background: #a8192b;
+    border-color: #a8192b;
     color: #ffffff !important;
   }
 
@@ -679,16 +669,16 @@ const social = author.socialLinks ?? {};
     color: #a69a93;
   }
 
-  :global(.vr-bottom-nl) .al-bottom-nl-form .btn-primary {
+  :global(.vr-bottom-nl) > .container > .btn-primary {
+    background: #a8192b;
+    color: #ffffff;
+    border-color: #a8192b;
+  }
+
+  :global(.vr-bottom-nl) > .container > .btn-primary:hover {
     background: #c9a257;
     color: #1c1018;
     border-color: #c9a257;
-  }
-
-  :global(.vr-bottom-nl) .al-bottom-nl-form .btn-primary:hover {
-    background: #7a1020;
-    color: #ffffff;
-    border-color: #7a1020;
   }
 
   :global(.vr-bottom-nl) .al-bottom-nl-privacy {
@@ -824,25 +814,3 @@ const social = author.socialLinks ?? {};
     }
   }
 </style>
-
-<script>
-  // Newsletter forms
-  function setupNlForm(formSelector: string, successSelector: string) {
-    const form = document.querySelector(formSelector) as HTMLFormElement;
-    form?.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const action = form.dataset.action;
-      const formData = new FormData(form);
-      formData.append('ml-submit', '1');
-      formData.append('anticsrf', 'true');
-      try {
-        await fetch(action!, { method: 'POST', body: formData, mode: 'no-cors' });
-      } catch (_) {}
-      form.style.display = 'none';
-      document.querySelector(successSelector)!.setAttribute('style', 'display:block; color:#ffffff; font-weight:600; margin-top:var(--space-sm);');
-    });
-  }
-
-  setupNlForm('.al-optin-form', '.al-optin-success');
-  setupNlForm('.al-bottom-nl-form', '.al-bottom-nl-success');
-</script>

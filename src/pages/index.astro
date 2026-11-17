@@ -139,7 +139,7 @@ for (let i = 0; mixedBooks.length < totalCards; i++) {
                   {card.kind === 'free' ? (
                     <a href={card.freeUrl} class="btn btn-dark">Get It Free</a>
                   ) : card.amazon ? (
-                    <a href={card.amazon} class="btn btn-dark" target="_blank" rel="noopener">Buy on Amazon</a>
+                    <a href={card.amazon} class="btn btn-dark" target="_blank" rel="noopener">{card.authorSlug === 'brianna-wilde' ? 'See on Amazon' : 'Buy on Amazon'}</a>
                   ) : (
                     <span class="btn-soon">Coming Soon</span>
                   )}

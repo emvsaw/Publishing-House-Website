@@ -45,7 +45,7 @@ const isFree = author?.data.freeBook?.title.trim().toLowerCase() === book.data.t
           </a>
         ) : book.data.buyLinks?.amazon ? (
           <a href={book.data.buyLinks.amazon} class="btn btn-primary bd-btn" target="_blank" rel="noopener">
-            Buy on Amazon
+            {book.data.authorSlug === 'brianna-wilde' ? 'See on Amazon' : 'Buy on Amazon'}
           </a>
         ) : (
           <span class="btn-soon bd-btn">Coming Soon</span>
