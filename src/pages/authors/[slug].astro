@@ -26,7 +26,6 @@ const latestRelease = books.find(b => b.data.featured) ?? books[0];
 const freeTitle = author.freeBook?.title?.trim().toLowerCase();
 // "All Books" = the complete catalogue (every title), in series order (oldest first).
 const fullCatalog = [...books].sort((a, b) => new Date(a.data.releaseDate).getTime() - new Date(b.data.releaseDate).getTime());
-const social = author.socialLinks ?? {};
 const theme = author.theme ?? null;
 // The Coming Soon banner's cover is author frontmatter, but it usually also
 // exists as a real book entry — link to that book's page when it matches.
@@ -48,14 +47,6 @@ const comingSoonBook = author.comingSoon
           {author.genres.map(g => <span class="tag">{g}</span>)}
         </div>
         <p class="bio-text">{author.bio}</p>
-        <div class="social-links">
-          {social.instagram && <a href={social.instagram} target="_blank" rel="noopener">Instagram</a>}
-          {social.tiktok && <a href={social.tiktok} target="_blank" rel="noopener">TikTok</a>}
-          {social.facebook && <a href={social.facebook} target="_blank" rel="noopener">Facebook</a>}
-          {social.website && <a href={social.website} target="_blank" rel="noopener">Website</a>}
-          {social.goodreads && <a href={social.goodreads} target="_blank" rel="noopener">Goodreads</a>}
-          {social.amazon && <a href={social.amazon} target="_blank" rel="noopener">Amazon</a>}
-        </div>
       </div>
     </div>
 
@@ -128,10 +119,10 @@ const comingSoonBook = author.comingSoon
               <p class="blurb">{author.comingSoon.blurb}</p>
             </div>
           </div>
-          {author.comingSoon.preorderLink && (
-            <a href={author.comingSoon.preorderLink} class="btn btn-primary coming-soon-btn" target="_blank" rel="noopener">
-              PREORDER BOOK
-            </a>
+          {comingSoonBook ? (
+            <a href={`/books/${comingSoonBook.id}/`} class="btn btn-primary coming-soon-btn">Read More</a>
+          ) : (
+            <span class="btn btn-primary coming-soon-btn">Preorder Soon</span>
           )}
         </div>
       </div>

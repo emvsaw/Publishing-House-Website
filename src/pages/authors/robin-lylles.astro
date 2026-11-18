@@ -15,10 +15,9 @@ const freeTitle = author.freeBook?.title?.trim().toLowerCase();
 // keep it out of the hero carousel and Latest Releases.
 const nonFreeBooks = books.filter(b => b.data.title.trim().toLowerCase() !== freeTitle);
 const heroBooks = nonFreeBooks.slice(0, 5); // top 5 for hero carousel
-const latestReleases = nonFreeBooks.slice(0, 2);
+const latestReleases = nonFreeBooks.slice(0, 3);
 // "All Books" = the complete catalogue (every title), in series order (oldest first).
 const fullCatalog = [...books].sort((a, b) => new Date(a.data.releaseDate).getTime() - new Date(b.data.releaseDate).getTime());
-const social = author.socialLinks ?? {};
 // The Coming Soon banner's cover is author frontmatter, but it usually also
 // exists as a real book entry — link to that book's page when it matches.
 const soonTitle = author.comingSoon?.title?.trim().toLowerCase();
@@ -86,12 +85,7 @@ const comingSoonBook = soonTitle ? books.find(b => b.data.title.trim().toLowerCa
           <p>{author.freeBook?.blurb ?? 'Join the mailing list for exclusive content, new release alerts, and a free cozy mystery.'}</p>
         </div>
         <div class="al-optin-form-wrap">
-          <form class="al-optin-form" data-action={author.newsletterFormAction ?? '#'}>
-            <input type="text" name="fields[name]" placeholder="First name" autocomplete="given-name" />
-            <input type="email" name="fields[email]" placeholder="Email" autocomplete="email" required />
-            <button type="submit" class="btn al-btn-dark" style="white-space:nowrap;">Subscribe</button>
-          </form>
-          <p class="al-optin-success" style="display:none;">Thank you! Check your inbox.</p>
+          <a class="btn al-btn-dark" href={author.freeBook?.link} target="_blank" rel="noopener noreferrer">Get the Free Story &amp; Subscribe</a>
           <p class="al-optin-privacy">Your information is safe. Unsubscribe anytime.</p>
         </div>
       </div>
@@ -109,13 +103,6 @@ const comingSoonBook = soonTitle ? books.find(b => b.data.title.trim().toLowerCa
             {author.genres.map(g => <span class="tag">{g}</span>)}
           </div>
           <p class="bio-text">{author.bio}</p>
-          <div class="social-links">
-            {social.instagram && <a href={social.instagram} target="_blank" rel="noopener">Instagram</a>}
-            {social.tiktok && <a href={social.tiktok} target="_blank" rel="noopener">TikTok</a>}
-            {social.facebook && <a href={social.facebook} target="_blank" rel="noopener">Facebook</a>}
-            {social.goodreads && <a href={social.goodreads} target="_blank" rel="noopener">Goodreads</a>}
-            {social.amazon && <a href={social.amazon} target="_blank" rel="noopener">Amazon</a>}
-          </div>
         </div>
       </div>
     </div>
@@ -173,10 +160,10 @@ const comingSoonBook = soonTitle ? books.find(b => b.data.title.trim().toLowerCa
           <span class="al-preorder-label">Coming Soon</span>
           <h2 class="al-preorder-title">{comingSoonBook ? <a href={`/books/${comingSoonBook.id}/`}>{author.comingSoon.title}</a> : author.comingSoon.title}</h2>
           <p class="al-preorder-blurb">{author.comingSoon.blurb}</p>
-          {author.comingSoon.preorderLink && (
-            <a href={author.comingSoon.preorderLink} class="al-preorder-btn" target="_blank" rel="noopener">
-              Pre-Order Now
-            </a>
+          {comingSoonBook ? (
+            <a href={`/books/${comingSoonBook.id}/`} class="al-preorder-btn">Read More</a>
+          ) : (
+            <span class="al-preorder-btn">Preorder Soon</span>
           )}
         </div>
       </div>
@@ -233,12 +220,7 @@ const comingSoonBook = soonTitle ? books.find(b => b.data.title.trim().toLowerCa
     <div class="container">
       <h2 class="al-bottom-nl-heading">Never Miss a New Release</h2>
       <p class="al-bottom-nl-desc">Join {author.name}'s mailing list for exclusive content, early cover reveals, and new release alerts delivered straight to your inbox.</p>
-      <form class="al-bottom-nl-form" data-action={author.newsletterFormAction ?? '#'}>
-        <input type="text" name="fields[name]" placeholder="Your first name" autocomplete="given-name" />
-        <input type="email" name="fields[email]" placeholder="Your email address" autocomplete="email" required />
-        <button type="submit" class="btn btn-primary" style="white-space:nowrap;">Subscribe</button>
-      </form>
-      <p class="al-bottom-nl-success" style="display:none;">Thank you! Check your inbox.</p>
+      <a class="btn btn-primary" href={author.newsletterFormAction} target="_blank" rel="noopener noreferrer">Get the Free Story &amp; Subscribe</a>
       <p class="al-bottom-nl-privacy">Your information is safe. Unsubscribe anytime.</p>
     </div>
   </section>
@@ -1023,23 +1005,4 @@ const comingSoonBook = soonTitle ? books.find(b => b.data.title.trim().toLowerCa
 
   startAuto();
 
-  // Newsletter forms
-  function setupNlForm(formSelector: string, successSelector: string) {
-    const form = document.querySelector(formSelector) as HTMLFormElement;
-    form?.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const action = form.dataset.action;
-      const formData = new FormData(form);
-      formData.append('ml-submit', '1');
-      formData.append('anticsrf', 'true');
-      try {
-        await fetch(action!, { method: 'POST', body: formData, mode: 'no-cors' });
-      } catch (_) {}
-      form.style.display = 'none';
-      document.querySelector(successSelector)!.setAttribute('style', 'display:block; color:#ffffff; font-weight:600; margin-top:var(--space-sm);');
-    });
-  }
-
-  setupNlForm('.al-optin-form', '.al-optin-success');
-  setupNlForm('.al-bottom-nl-form', '.al-bottom-nl-success');
 </script>

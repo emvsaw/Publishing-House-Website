@@ -50,7 +50,7 @@ const free = author.freeBook!;
           <p class="rm-blurb">{free.blurb}</p>
         )}
 
-        {author.slug === 'brianna-wilde' ? (
+        {author.slug === 'brianna-wilde' || author.slug === 'clara-regly' || author.slug === 'robin-lylles' ? (
           <a class="btn btn-primary rm-btn" href={free.link} target="_blank" rel="noopener">Get the Free Story</a>
         ) : (
           <>

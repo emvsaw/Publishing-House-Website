@@ -22,7 +22,6 @@ const listable = books.filter(b => {
 const latestReleases = listable.slice(0, 2);
 // "All Books" = the complete catalogue (every title), in series order (oldest first).
 const fullCatalog = [...books].sort((a, b) => new Date(a.data.releaseDate).getTime() - new Date(b.data.releaseDate).getTime());
-const social = author.socialLinks ?? {};
 ---
 
 <AuthorLandingLayout title={`${author.name} | Dark Mafia Romance Author`} description={`Books by ${author.name}. Obsessive heroes, dangerous bargains, and romance with a body count, on the page, not off it.`} authorName={author.name}>
@@ -90,13 +89,6 @@ const social = author.socialLinks ?? {};
             {author.genres.map(g => <span class="tag">{g}</span>)}
           </div>
           <p class="bio-text">{author.bio}</p>
-          <div class="social-links">
-            {social.instagram && <a href={social.instagram} target="_blank" rel="noopener">Instagram</a>}
-            {social.tiktok && <a href={social.tiktok} target="_blank" rel="noopener">TikTok</a>}
-            {social.facebook && <a href={social.facebook} target="_blank" rel="noopener">Facebook</a>}
-            {social.goodreads && <a href={social.goodreads} target="_blank" rel="noopener">Goodreads</a>}
-            {social.amazon && <a href={social.amazon} target="_blank" rel="noopener">Amazon</a>}
-          </div>
         </div>
       </div>
     </div>
@@ -148,11 +140,7 @@ const social = author.socialLinks ?? {};
           <span class="al-preorder-label vr-preorder-label">Coming Soon</span>
           <h2 class="al-preorder-title">{author.comingSoon.title}</h2>
           <p class="al-preorder-blurb">{author.comingSoon.blurb}</p>
-          {author.comingSoon.preorderLink && (
-            <a href={author.comingSoon.preorderLink} class="al-preorder-btn vr-preorder-btn" target="_blank" rel="noopener">
-              See on Amazon
-            </a>
-          )}
+          <span class="al-preorder-btn vr-preorder-btn">Preorder Soon</span>
         </div>
       </div>
     </section>
