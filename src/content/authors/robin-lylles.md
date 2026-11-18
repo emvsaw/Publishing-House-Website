@@ -11,7 +11,7 @@ socialLinks:
 newsletterFormAction: "https://BookHip.com/WPRTMZJ"
 freeBook:
   title: "The Villa's Last Guest"
-  cover: "/images/covers/robin-lylles/the-villas-last-guest.jpg"
+  cover: "/images/covers-optimized/robin-lylles/the-villas-last-guest.jpg"
   blurb: "A German guest vanishes from the Pensión Esperanza. The police shrug. Goya does not. The free Calablanca prequel, and the notebook that starts everything."
   link: "https://BookHip.com/WPRTMZJ"
 comingSoon:

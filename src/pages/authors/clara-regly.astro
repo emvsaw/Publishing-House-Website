@@ -60,15 +60,15 @@ const comingSoonBook = soonTitle ? books.find(b => b.data.title.trim().toLowerCa
         </div>
       ))}
     </div>
-    <button class="ml-hero-arrow ml-hero-arrow--left" id="mlHeroPrev" aria-label="Previous book">
+    <button type="button" class="ml-hero-arrow ml-hero-arrow--left" id="mlHeroPrev" aria-label="Previous book">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
     </button>
-    <button class="ml-hero-arrow ml-hero-arrow--right" id="mlHeroNext" aria-label="Next book">
+    <button type="button" class="ml-hero-arrow ml-hero-arrow--right" id="mlHeroNext" aria-label="Next book">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
     </button>
     <div class="ml-hero-dots" aria-label="Book carousel navigation">
       {heroBooks.map((book, i) => (
-        <button class={`ml-hero-dot ${i === 0 ? 'active' : ''}`} data-dot={i} aria-label={`Show ${book.data.title}`}></button>
+        <button type="button" class={`ml-hero-dot ${i === 0 ? 'active' : ''}`} data-dot={i} aria-label={`Show ${book.data.title}`}></button>
       ))}
     </div>
   </section>
@@ -87,7 +87,7 @@ const comingSoonBook = soonTitle ? books.find(b => b.data.title.trim().toLowerCa
           <p>{author.freeBook?.blurb ?? 'Join the mailing list for exclusive content, new release alerts, and the free Authenticator prequel.'}</p>
         </div>
         <div class="al-optin-form-wrap">
-          <a class="btn al-btn-dark" href={author.freeBook?.link} target="_blank" rel="noopener">Get the Free Story &amp; Subscribe</a>
+          <a class="btn al-btn-dark" href="https://redwoodbaypress.com/#newsletter">Get the Free Story &amp; Subscribe</a>
           <p class="al-optin-privacy">Your information is safe. Unsubscribe anytime.</p>
         </div>
       </div>
@@ -222,7 +222,7 @@ const comingSoonBook = soonTitle ? books.find(b => b.data.title.trim().toLowerCa
     <div class="container">
       <h2 class="al-bottom-nl-heading"><mark class="ml-highlight">Never Miss a New Release</mark></h2>
       <p class="al-bottom-nl-desc">Join {author.name}'s mailing list for exclusive content, early cover reveals, and new release alerts delivered straight to your inbox.</p>
-      <a class="btn btn-primary" href={author.freeBook?.link} target="_blank" rel="noopener">Get the Free Story &amp; Subscribe</a>
+      <a class="btn btn-primary" href="https://redwoodbaypress.com/#newsletter">Get the Free Story &amp; Subscribe</a>
       <p class="al-bottom-nl-privacy">Your information is safe. Unsubscribe anytime.</p>
     </div>
   </section>
@@ -239,7 +239,7 @@ const comingSoonBook = soonTitle ? books.find(b => b.data.title.trim().toLowerCa
     position: relative;
   }
 
-  :global(.ml-hero-carousel) { position: relative; width: 100%; }
+  :global(.ml-hero-carousel) { position: relative; width: 100%; min-height: 480px; }
   :global(.ml-hero-slide) { display: none; opacity: 0; transition: opacity 0.5s ease; }
   :global(.ml-hero-slide.active) { display: block; opacity: 1; }
   :global(.ml-hero-arrow) {
@@ -752,6 +752,7 @@ const comingSoonBook = soonTitle ? books.find(b => b.data.title.trim().toLowerCa
   }
 
   @media (max-width: 768px) {
+    :global(.ml-hero-carousel) { min-height: 690px; }
     :global(.ml-hero-inner) {
       flex-direction: column-reverse;
       text-align: center;
@@ -804,6 +805,7 @@ const comingSoonBook = soonTitle ? books.find(b => b.data.title.trim().toLowerCa
   }
 
   @media (max-width: 480px) {
+    :global(.ml-hero-carousel) { min-height: 620px; }
     :global(.ml-hero) {
       padding: 2rem 0;
     }
