@@ -14,11 +14,33 @@ const { book } = Astro.props;
 const author = await getEntry('authors', book.data.authorSlug);
 const { Content } = await render(book);
 const isFree = author?.data.freeBook?.title.trim().toLowerCase() === book.data.title.trim().toLowerCase();
+const bookUrl = `https://redwoodbaypress.com/books/${book.id}/`;
+const bookSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Book',
+  name: book.data.title,
+  description: book.data.blurb,
+  genre: book.data.genre,
+  image: `https://redwoodbaypress.com${book.data.cover}`,
+  url: bookUrl,
+  datePublished: book.data.releaseDate,
+  author: author ? {
+    '@type': 'Person',
+    name: author.data.name,
+    url: `https://redwoodbaypress.com/authors/${author.data.slug}/`,
+  } : undefined,
+  publisher: {
+    '@type': 'Organization',
+    name: 'Redwood Bay Press',
+    url: 'https://redwoodbaypress.com',
+  },
+};
 ---
 
 <BaseLayout
   title={`${book.data.title} | ${author?.data.name ?? 'Redwood Bay Press'}`}
   description={book.data.blurb}
+  structuredData={bookSchema}
 >
   <section class="bd">
     <div class="container bd-inner">
