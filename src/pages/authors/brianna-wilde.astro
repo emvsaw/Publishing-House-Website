@@ -10,15 +10,11 @@ const books = allBooks
   .filter(b => b.data.authorSlug === 'brianna-wilde')
   .sort((a, b) => new Date(b.data.releaseDate).getTime() - new Date(a.data.releaseDate).getTime());
 
-const heroBook = books.find(b => b.data.featured) ?? books[0];
 const freeTitle = author.freeBook?.title?.trim().toLowerCase();
 const soonTitle = author.comingSoon?.title?.trim().toLowerCase();
-// Don't list a book that's already shown elsewhere: the hero banner, the reader
-// magnet opt-in bar, or the Coming Soon banner.
-const listable = books.filter(b => {
-  const t = b.data.title.trim().toLowerCase();
-  return b !== heroBook && t !== freeTitle && t !== soonTitle;
-});
+// Keep the free reader magnet in its own opt-in bar; show every other book in the carousel.
+const heroBooks = books.filter(b => b.data.title.trim().toLowerCase() !== freeTitle);
+const listable = books.filter(b => b.data.title.trim().toLowerCase() !== freeTitle && b.data.title.trim().toLowerCase() !== soonTitle);
 // Put available books with live purchase links first, then preserve newest-first order.
 const latestReleases = [...listable]
   .sort((a, b) => Number(Boolean(b.data.buyLinks?.amazon)) - Number(Boolean(a.data.buyLinks?.amazon)))
@@ -29,34 +25,51 @@ const fullCatalog = [...books].sort((a, b) => new Date(a.data.releaseDate).getTi
 
 <AuthorLandingLayout title={`${author.name} | Dark Mafia Romance Author`} description={`Books by ${author.name}. Obsessive heroes, dangerous bargains, and romance with a body count, on the page, not off it.`} authorName={author.name}>
 
-  <!-- HERO: Featured Book Banner -->
+  <!-- HERO: Book Carousel -->
   <section class="vr-hero" id="books">
     <div class="vr-hero-motif" aria-hidden="true">
       <span class="vr-motif vr-motif--one">I</span>
       <span class="vr-motif vr-motif--two">II</span>
       <span class="vr-motif vr-motif--three">III</span>
     </div>
-    <div class="vr-hero-inner container">
-      <div class="vr-hero-text">
-        <h1 class="vr-hero-title"><a href={`/books/${heroBook.id}/`}>{heroBook.data.title}</a></h1>
-        <p class="vr-hero-tagline">Dangerous men. Darker bargains. Desire is the one contract nobody walks away from.</p>
-        <p class="vr-hero-blurb">{heroBook.data.blurb}</p>
-        <div class="vr-hero-actions">
-          {heroBook.data.buyLinks?.amazon ? (
-            <a href={heroBook.data.buyLinks.amazon} class="vr-hero-btn" target="_blank" rel="noopener">
-              See on Amazon
-            </a>
-          ) : (
-            <span class="vr-hero-btn vr-hero-btn--soon">Coming Soon</span>
-          )}
-          <a href={`/books/${heroBook.id}/`} class="vr-hero-link">Read More &rarr;</a>
+    <div class="vr-hero-carousel" id="vrHeroCarousel">
+      {heroBooks.map((book, i) => (
+        <div class={`vr-hero-slide ${i === 0 ? 'active' : ''}`} data-index={i}>
+          <div class="vr-hero-inner container">
+            <div class="vr-hero-text">
+              <h1 class="vr-hero-title"><a href={`/books/${book.id}/`}>{book.data.title}</a></h1>
+              <p class="vr-hero-tagline">Dangerous men. Darker bargains. Desire is the one contract nobody walks away from.</p>
+              <p class="vr-hero-blurb">{book.data.blurb}</p>
+              <div class="vr-hero-actions">
+                {book.data.buyLinks?.amazon ? (
+                  <a href={book.data.buyLinks.amazon} class="vr-hero-btn" target="_blank" rel="noopener">
+                    See on Amazon
+                  </a>
+                ) : (
+                  <span class="vr-hero-btn vr-hero-btn--soon">Coming Soon</span>
+                )}
+                <a href={`/books/${book.id}/`} class="vr-hero-link">Read More &rarr;</a>
+              </div>
+            </div>
+            <div class="vr-hero-cover">
+              <a href={`/books/${book.id}/`}>
+                <img src={book.data.cover} alt={book.data.title} />
+              </a>
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="vr-hero-cover">
-        <a href={`/books/${heroBook.id}/`}>
-          <img src={heroBook.data.cover} alt={heroBook.data.title} />
-        </a>
-      </div>
+      ))}
+    </div>
+    <button class="vr-hero-arrow vr-hero-arrow--left" id="vrHeroPrev" aria-label="Previous book">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <button class="vr-hero-arrow vr-hero-arrow--right" id="vrHeroNext" aria-label="Next book">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <div class="vr-hero-dots" aria-label="Book carousel navigation">
+      {heroBooks.map((book, i) => (
+        <button class={`vr-hero-dot ${i === 0 ? 'active' : ''}`} data-dot={i} aria-label={`Show ${book.data.title}`}></button>
+      ))}
     </div>
   </section>
 
@@ -212,6 +225,30 @@ const fullCatalog = [...books].sort((a, b) => new Date(a.data.releaseDate).getTi
     overflow: hidden;
     position: relative;
   }
+
+  :global(.vr-hero-carousel) { position: relative; width: 100%; }
+  :global(.vr-hero-slide) { display: none; opacity: 0; transition: opacity 0.5s ease; }
+  :global(.vr-hero-slide.active) { display: block; opacity: 1; }
+  :global(.vr-hero-arrow) {
+    position: absolute; top: 50%; transform: translateY(-50%); z-index: 10;
+    background: rgba(201, 162, 87, 0.22); border: 1px solid rgba(244, 236, 224, 0.3);
+    border-radius: 50%; width: 48px; height: 48px; display: flex;
+    align-items: center; justify-content: center; cursor: pointer; color: #f4ece0;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  :global(.vr-hero-arrow):hover { background: #7a1020; border-color: #c9a257; }
+  :global(.vr-hero-arrow) svg { width: 22px; height: 22px; }
+  :global(.vr-hero-arrow--left) { left: 1.5rem; }
+  :global(.vr-hero-arrow--right) { right: 1.5rem; }
+  :global(.vr-hero-dots) {
+    display: flex; justify-content: center; gap: 0.5rem; padding: 1rem 0 0;
+    position: relative; z-index: 10;
+  }
+  :global(.vr-hero-dot) {
+    width: 10px; height: 10px; border-radius: 50%; border: 1px solid rgba(244, 236, 224, 0.5);
+    background: transparent; cursor: pointer; transition: background 0.2s, border-color 0.2s; padding: 0;
+  }
+  :global(.vr-hero-dot.active), :global(.vr-hero-dot):hover { background: #c9a257; border-color: #c9a257; }
 
   /* Faint roman-numeral watermarks for the three books in the trilogy */
   :global(.vr-hero-motif) {
@@ -805,3 +842,33 @@ const fullCatalog = [...books].sort((a, b) => new Date(a.data.releaseDate).getTi
     }
   }
 </style>
+
+<script>
+  const vrSlides = document.querySelectorAll('.vr-hero-slide') as NodeListOf<HTMLElement>;
+  const vrDots = document.querySelectorAll('.vr-hero-dot') as NodeListOf<HTMLButtonElement>;
+  const vrPrev = document.getElementById('vrHeroPrev');
+  const vrNext = document.getElementById('vrHeroNext');
+  let vrCurrent = 0;
+  let vrTimer: ReturnType<typeof setInterval>;
+
+  function vrGoToSlide(index: number) {
+    vrSlides[vrCurrent]?.classList.remove('active');
+    vrDots[vrCurrent]?.classList.remove('active');
+    vrCurrent = (index + vrSlides.length) % vrSlides.length;
+    vrSlides[vrCurrent]?.classList.add('active');
+    vrDots[vrCurrent]?.classList.add('active');
+  }
+
+  function vrResetAuto() {
+    clearInterval(vrTimer);
+    vrTimer = setInterval(() => vrGoToSlide(vrCurrent + 1), 6000);
+  }
+
+  vrPrev?.addEventListener('click', () => { vrGoToSlide(vrCurrent - 1); vrResetAuto(); });
+  vrNext?.addEventListener('click', () => { vrGoToSlide(vrCurrent + 1); vrResetAuto(); });
+  vrDots.forEach(dot => dot.addEventListener('click', () => {
+    vrGoToSlide(Number(dot.dataset.dot));
+    vrResetAuto();
+  }));
+  if (vrSlides.length > 1) vrResetAuto();
+</script>
