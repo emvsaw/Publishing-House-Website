@@ -13,7 +13,12 @@ const books = allBooks
 const freeTitle = author.freeBook?.title?.trim().toLowerCase();
 const soonTitle = author.comingSoon?.title?.trim().toLowerCase();
 // Keep the free reader magnet in its own opt-in bar; show every other book in the carousel.
-const heroBooks = books.filter(b => b.data.title.trim().toLowerCase() !== freeTitle);
+// Start with the established featured title, then continue newest-first.
+const carouselBooks = books.filter(b => b.data.title.trim().toLowerCase() !== freeTitle);
+const featuredCarouselBook = carouselBooks.find(b => b.data.title === 'The Amarna Conspiracy');
+const heroBooks = featuredCarouselBook
+  ? [featuredCarouselBook, ...carouselBooks.filter(b => b !== featuredCarouselBook)]
+  : carouselBooks;
 const listable = books.filter(b => b.data.title.trim().toLowerCase() !== freeTitle && b.data.title.trim().toLowerCase() !== soonTitle);
 const latestReleases = listable.slice(0, 2);
 // "All Books" = the complete catalogue (every title), in series order (oldest first).

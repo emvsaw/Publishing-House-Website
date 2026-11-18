@@ -14,6 +14,7 @@ const { book } = Astro.props;
 const author = await getEntry('authors', book.data.authorSlug);
 const { Content } = await render(book);
 const isFree = author?.data.freeBook?.title.trim().toLowerCase() === book.data.title.trim().toLowerCase();
+const hasLongDescription = Boolean(book.body?.trim());
 const bookUrl = `https://redwoodbaypress.com/books/${book.id}/`;
 const bookSchema = {
   '@context': 'https://schema.org',
@@ -58,7 +59,7 @@ const bookSchema = {
         <span class="tag genre-tag bd-genre">{book.data.genre}</span>
 
         <div class="bd-blurb">
-          <Content />
+          {hasLongDescription ? <Content /> : <p>{book.data.blurb}</p>}
         </div>
 
         {isFree && author ? (
