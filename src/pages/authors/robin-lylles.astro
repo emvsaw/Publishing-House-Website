@@ -22,6 +22,8 @@ const fullCatalog = [...books].sort((a, b) => new Date(a.data.releaseDate).getTi
 // exists as a real book entry — link to that book's page when it matches.
 const soonTitle = author.comingSoon?.title?.trim().toLowerCase();
 const comingSoonBook = soonTitle ? books.find(b => b.data.title.trim().toLowerCase() === soonTitle) : undefined;
+// Keep the future title in the content data, but hide its page section until it is ready.
+const showComingSoon = false;
 ---
 
 <AuthorLandingLayout title={`${author.name} | Cozy Mystery Author`} description={`Books by ${author.name}. Seaside secrets. A creaky pension. Mysteries best enjoyed with strong coffee.`} authorName={author.name}>
@@ -143,7 +145,7 @@ const comingSoonBook = soonTitle ? books.find(b => b.data.title.trim().toLowerCa
   )}
 
   <!-- Coming Soon -->
-  {author.comingSoon && (
+  {showComingSoon && author.comingSoon && (
     <section class="al-preorder-banner" style={`background-image: url(${author.comingSoon.cover});`}>
       <div class="al-preorder-overlay"></div>
       <div class="al-preorder-inner container">
