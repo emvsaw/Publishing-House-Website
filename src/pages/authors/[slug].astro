@@ -24,8 +24,11 @@ const { author, books } = Astro.props;
 // Lead with the featured book (e.g. a series Book 1) if one is marked, else the newest.
 const latestRelease = books.find(b => b.data.featured) ?? books[0];
 const freeTitle = author.freeBook?.title?.trim().toLowerCase();
-// "All Books" = the complete catalogue (every title), in series order (oldest first).
-const fullCatalog = [...books].sort((a, b) => new Date(a.data.releaseDate).getTime() - new Date(b.data.releaseDate).getTime());
+// "All Books in Reading Order" = the complete catalogue (oldest first).
+const fullCatalog = [...books].sort((a, b) =>
+  (a.data.readingOrder ?? new Date(a.data.releaseDate).getTime()) -
+  (b.data.readingOrder ?? new Date(b.data.releaseDate).getTime())
+);
 const theme = author.theme ?? null;
 // The Coming Soon banner's cover is author frontmatter, but it usually also
 // exists as a real book entry — link to that book's page when it matches.
@@ -132,7 +135,7 @@ const comingSoonBook = author.comingSoon
     {fullCatalog.length > 0 && (
       <section class="section">
         <div class="section-title" style="text-align:left;">
-          <span>All Books</span>
+          <span>All Books in Reading Order</span>
           <h2>By {author.name}</h2>
         </div>
         <div class="book-grid">

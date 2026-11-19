@@ -47,12 +47,16 @@ for (const b of allBooks) {
     genre: b.data.genre,
     amazon: b.data.buyLinks?.amazon,
     releaseDate: b.data.releaseDate,
+    readingOrder: b.data.readingOrder,
     detailUrl: `/books/${b.id}/`,
   });
 }
 
 const authorCardLists = [...cardsByAuthor.values()].map(({ free, books }) => {
-  books.sort((a, b) => new Date(a.releaseDate).getTime() - new Date(b.releaseDate).getTime());
+  books.sort((a, b) =>
+    (a.readingOrder ?? new Date(a.releaseDate).getTime()) -
+    (b.readingOrder ?? new Date(b.releaseDate).getTime())
+  );
   return free ? [free, ...books] : books;
 });
 const totalCards = authorCardLists.reduce((n, l) => n + l.length, 0);

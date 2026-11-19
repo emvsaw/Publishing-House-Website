@@ -3,8 +3,9 @@ title: "Sails & Secrets"
 authorSlug: robin-lylles
 genre: Cozy Mystery
 cover: "/images/covers-optimized/robin-lylles/sails-and-secrets.jpg"
-blurb: "In Calablanca, even the alibis come with a sea view. When an investor is found murdered aboard his yacht during regatta week, suspicion falls on Daniel—the man Goya Winters Sánchez is finally allowing herself to imagine a future with. Book 2 of the Calablanca Cozy Mysteries."
+blurb: "In Calablanca, even the alibis come with a sea view. When an investor is found murdered aboard his yacht during regatta week, suspicion falls on Daniel—the man Goya Winters Sánchez is finally allowing herself to imagine a future with. Book 3 of the Calablanca Cozy Mysteries."
 releaseDate: "2026-10-01"
+readingOrder: 3
 featured: false
 ---
 

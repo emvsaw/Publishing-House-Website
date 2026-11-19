@@ -16,8 +16,11 @@ const freeTitle = author.freeBook?.title?.trim().toLowerCase();
 const nonFreeBooks = books.filter(b => b.data.title.trim().toLowerCase() !== freeTitle);
 const heroBooks = nonFreeBooks.slice(0, 5); // top 5 for hero carousel
 const latestReleases = nonFreeBooks.slice(0, 3);
-// "All Books" = the complete catalogue (every title), in series order (oldest first).
-const fullCatalog = [...books].sort((a, b) => new Date(a.data.releaseDate).getTime() - new Date(b.data.releaseDate).getTime());
+// "All Books in Reading Order" = the complete catalogue, including the prequel.
+const fullCatalog = [...books].sort((a, b) =>
+  (a.data.readingOrder ?? new Date(a.data.releaseDate).getTime()) -
+  (b.data.readingOrder ?? new Date(b.data.releaseDate).getTime())
+);
 // The Coming Soon banner's cover is author frontmatter, but it usually also
 // exists as a real book entry — link to that book's page when it matches.
 const soonTitle = author.comingSoon?.title?.trim().toLowerCase();
@@ -177,7 +180,7 @@ const showComingSoon = false;
     <section class="al-section" id="all-books">
       <div class="container">
         <div class="section-title" style="text-align:left;">
-          <span>All Books</span>
+          <span>All Books in Reading Order</span>
           <h2>By {author.name}</h2>
         </div>
         <div class="book-grid">

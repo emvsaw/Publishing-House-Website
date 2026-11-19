@@ -3,8 +3,9 @@ title: "Tapas & Traitors"
 authorSlug: robin-lylles
 genre: Cozy Mystery
 cover: "/images/covers-optimized/robin-lylles/tapas-and-traitors.jpg"
-blurb: "The wine is breathing. One of the guests isn't. When Jaime Osuna is murdered during Bodega del Mar's food-and-wine weekend, Goya Winters Sánchez finds old resentments, family loyalties, and alibis that don't hold up—and a discovery among her aunt's papers that could change everything. Book 3 of the Calablanca Cozy Mysteries."
+blurb: "The wine is breathing. One of the guests isn't. When Jaime Osuna is murdered during Bodega del Mar's food-and-wine weekend, Goya Winters Sánchez finds old resentments, family loyalties, and alibis that don't hold up—and a discovery among her aunt's papers that could change everything. Book 2 of the Calablanca Cozy Mysteries."
 releaseDate: "2026-12-01"
+readingOrder: 2
 featured: false
 ---
 

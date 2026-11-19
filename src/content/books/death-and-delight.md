@@ -5,6 +5,7 @@ genre: Cozy Mystery
 cover: "/images/covers-optimized/robin-lylles/death-and-delight.jpg"
 blurb: "She came to Spain for a fresh start. The village supplied a body. When a commissioner collapses after the festival toast and her cook's cousin becomes the prime suspect, newly divorced guesthouse owner Goya Winters Sánchez must separate gossip from truth before an innocent man pays for someone else's lie. Book 1 of the Calablanca Cozy Mysteries."
 releaseDate: "2026-08-01"
+readingOrder: 1
 featured: true
 ---
 

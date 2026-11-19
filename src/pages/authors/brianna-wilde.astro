@@ -19,8 +19,11 @@ const listable = books.filter(b => b.data.title.trim().toLowerCase() !== freeTit
 const latestReleases = [...listable]
   .sort((a, b) => Number(Boolean(b.data.buyLinks?.amazon)) - Number(Boolean(a.data.buyLinks?.amazon)))
   .slice(0, 2);
-// "All Books" = the complete catalogue (every title), in series order (oldest first).
-const fullCatalog = [...books].sort((a, b) => new Date(a.data.releaseDate).getTime() - new Date(b.data.releaseDate).getTime());
+// "All Books in Reading Order" = the complete catalogue (oldest first).
+const fullCatalog = [...books].sort((a, b) =>
+  (a.data.readingOrder ?? new Date(a.data.releaseDate).getTime()) -
+  (b.data.readingOrder ?? new Date(b.data.releaseDate).getTime())
+);
 ---
 
 <AuthorLandingLayout title={`${author.name} | Dark Mafia Romance Author`} description={`Books by ${author.name}. Obsessive heroes, dangerous bargains, and romance with a body count, on the page, not off it.`} authorName={author.name}>
@@ -167,7 +170,7 @@ const fullCatalog = [...books].sort((a, b) => new Date(a.data.releaseDate).getTi
     <section class="al-section" id="all-books">
       <div class="container">
         <div class="section-title" style="text-align:left;">
-          <span>All Books</span>
+          <span>All Books in Reading Order</span>
           <h2>By {author.name}</h2>
         </div>
         <div class="book-grid">
