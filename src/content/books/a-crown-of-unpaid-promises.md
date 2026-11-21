@@ -3,7 +3,7 @@ title: "A Crown of Unpaid Promises"
 authorSlug: brianna-wilde
 genre: Dark Mafia Romance
 cover: "/images/covers/brianna-wilde/a-crown-of-unpaid-promises.jpg"
-blurb: "Rhea Voss has until Friday to call in the debts that will save her family's empire, and her ruthless ex, rival heir Damian Cross, is offering the one vote that can do it: marriage. She takes a red pen to his prenup and tells herself this is only business. A second-chance, marriage-of-convenience dark mafia romance that closes The Velvet Reckoning trilogy. Book 3 of The Velvet Reckoning."
+blurb: "Rhea Vickers has until Friday to call in the debts that will save her family's empire, and her ruthless ex, rival heir Damian Cross, is offering the one vote that can do it: marriage. She takes a red pen to his prenup and tells herself this is only business. A second-chance, marriage-of-convenience dark mafia romance that closes The Velvet Reckoning trilogy. Book 3 of The Velvet Reckoning."
 releaseDate: "2027-04-01"
 featured: false
 ---
@@ -12,7 +12,7 @@ Seven years ago, he put a price on her heart. Now, he's offering her a ring—an
 
 *A dark mafia arranged marriage romance: rival heirs, enemies to lovers, negotiated marriage.*
 
-Rhea Voss has until Friday to call in the debts of 312 employees or lose her rightful claim to the Baines empire. When her ruthless ex-lover and rival heir, Damian Cross, walks into her office offering a strategic marriage of convenience, Rhea knows better than to trust him. Marrying Damian gives her the votes she needs to fight back, but she isn't taking any chances: she takes a red pen to his forty-one-page prenuptial agreement, establishing a strict exit clause and keeping her fortune entirely her own.
+Rhea Vickers has until Friday to call in the debts of 312 employees or lose her rightful claim to the Baines empire. When her ruthless ex-lover and rival heir, Damian Cross, walks into her office offering a strategic marriage of convenience, Rhea knows better than to trust him. Marrying Damian gives her the votes she needs to fight back, but she isn't taking any chances: she takes a red pen to his forty-one-page prenuptial agreement, establishing a strict exit clause and keeping her fortune entirely her own.
 
 Damian agrees to every line. He thinks he's playing a long game. Rhea knows she's walking into the lion's den.
 
