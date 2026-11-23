@@ -128,6 +128,7 @@ const comingSoonBook = soonTitle ? books.find(b => b.data.title.trim().toLowerCa
               </a>
               <div class="release-info">
                 <h3><a href={`/books/${book.id}/`}><mark>{book.data.title}</mark></a></h3>
+                {book.data.tagline && <p class="ml-card-tagline">{book.data.tagline}</p>}
                 <p class="blurb">{book.data.blurb}</p>
                 <div class="ml-release-actions">
                   {book.data.buyLinks?.amazon ? (
@@ -195,6 +196,7 @@ const comingSoonBook = soonTitle ? books.find(b => b.data.title.trim().toLowerCa
                 <div class="info">
                   <h4><a href={detailUrl}>{book.data.title}</a></h4>
                   <span class="tag genre-tag">{book.data.genre}</span>
+                  {book.data.tagline && <p class="ml-card-tagline">{book.data.tagline}</p>}
                   <p class="book-card-blurb">
                     {book.data.blurb}
                   </p>
@@ -331,6 +333,14 @@ const comingSoonBook = soonTitle ? books.find(b => b.data.title.trim().toLowerCa
     font-weight: 600;
     text-decoration: underline;
     text-underline-offset: 3px;
+  }
+
+  :global(.ml-card-tagline) {
+    color: #1B3A5C;
+    font-weight: 700;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin: 0.5rem 0 0.25rem;
   }
 
   :global(.ml-release-link):hover {
