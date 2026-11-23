@@ -198,6 +198,9 @@ const comingSoonBook = soonTitle ? books.find(b => b.data.title.trim().toLowerCa
                   <p class="book-card-blurb">
                     {book.data.blurb}
                   </p>
+                  {(isFree || book.data.buyLinks?.amazon) && (
+                    <a href={detailUrl} class="ml-release-link ml-card-link">Read More &rarr;</a>
+                  )}
                   {isFree ? (
                     <a href={`/free/${author.slug}/`} class="btn btn-outline book-card-btn">
                       Get It Free
@@ -332,6 +335,17 @@ const comingSoonBook = soonTitle ? books.find(b => b.data.title.trim().toLowerCa
 
   :global(.ml-release-link):hover {
     color: #153049;
+  }
+
+  /* "Read More" link above the button in the reading-order cards */
+  :global(.book-card .info .ml-card-link) {
+    margin-top: auto;
+    padding-top: 0.75rem;
+    text-align: center;
+  }
+
+  :global(.book-card .info .ml-card-link + .book-card-btn) {
+    margin-top: 0.6rem;
   }
 
   :global(.al-preorder-title) a {

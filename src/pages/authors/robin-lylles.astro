@@ -198,6 +198,9 @@ const showComingSoon = false;
                 <p class="book-card-blurb">
                   {book.data.blurb}
                 </p>
+                {(isFree || book.data.buyLinks?.amazon) && (
+                  <a href={detailUrl} class="bm-release-link bm-card-link">Read More &rarr;</a>
+                )}
                 {isFree ? (
                   <a href={`/free/${author.slug}/`} class="btn btn-outline book-card-btn">
                     Get It Free
@@ -390,6 +393,17 @@ const showComingSoon = false;
 
   :global(.bm-release-link):hover {
     color: #1b1030;
+  }
+
+  /* "Read More" link above the button in the reading-order cards */
+  :global(.book-card .info .bm-card-link) {
+    margin-top: auto;
+    padding-top: 0.75rem;
+    text-align: center;
+  }
+
+  :global(.book-card .info .bm-card-link + .book-card-btn) {
+    margin-top: 0.6rem;
   }
 
   :global(.al-preorder-title) a {

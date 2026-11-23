@@ -174,18 +174,24 @@ const fullCatalog = [...books].sort((a, b) =>
           <h2>By {author.name}</h2>
         </div>
         <div class="book-grid">
-          {fullCatalog.map(book => (
+          {fullCatalog.map(book => {
+            const isFree = book.data.title.trim().toLowerCase() === freeTitle;
+            const detailUrl = isFree ? `/free/${author.slug}/` : `/books/${book.id}/`;
+            return (
             <div class="card book-card">
-              <a href={`/books/${book.id}/`} class="cover-wrap">
+              <a href={detailUrl} class="cover-wrap">
                 <img src={book.data.cover} alt={book.data.title} loading="lazy" />
               </a>
               <div class="info">
-                <h4><a href={`/books/${book.id}/`}>{book.data.title}</a></h4>
+                <h4><a href={detailUrl}>{book.data.title}</a></h4>
                 <span class="tag genre-tag">{book.data.genre}</span>
                 <p class="book-card-blurb">
                   {book.data.blurb}
                 </p>
-                {book.data.title.trim().toLowerCase() === freeTitle ? (
+                {(isFree || book.data.buyLinks?.amazon) && (
+                  <a href={detailUrl} class="vr-release-link vr-card-link">Read More &rarr;</a>
+                )}
+                {isFree ? (
                   <a href={`/free/${author.slug}/`} class="btn btn-outline book-card-btn">
                     Get It Free
                   </a>
@@ -194,13 +200,14 @@ const fullCatalog = [...books].sort((a, b) =>
                     See on Amazon
                   </a>
                 ) : (
-                  <a href={`/books/${book.id}/`} class="btn btn-outline book-card-btn">
+                  <a href={detailUrl} class="btn btn-outline book-card-btn">
                     Read More
                   </a>
                 )}
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
@@ -618,6 +625,17 @@ const fullCatalog = [...books].sort((a, b) =>
 
   :global(.vr-release-link):hover {
     color: #1a1216;
+  }
+
+  /* "Read More" link above the button in the reading-order cards */
+  :global(.book-card .info .vr-card-link) {
+    margin-top: auto;
+    padding-top: 0.75rem;
+    text-align: center;
+  }
+
+  :global(.book-card .info .vr-card-link + .book-card-btn) {
+    margin-top: 0.6rem;
   }
 
   /* Latest Releases highlight */
