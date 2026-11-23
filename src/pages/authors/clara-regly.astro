@@ -41,7 +41,7 @@ const comingSoonBook = soonTitle ? books.find(b => b.data.title.trim().toLowerCa
           <div class="ml-hero-inner container">
             <div class="ml-hero-text">
               <h1 class="ml-hero-title"><a href={`/books/${book.id}/`}>{book.data.title}</a></h1>
-              <p class="ml-hero-tagline">An authenticator with a sharp eye. A Europe full of beautiful lies.</p>
+              <p class="ml-hero-tagline">{book.data.tagline ?? "An authenticator with a sharp eye. A Europe full of beautiful lies."}</p>
               <p class="ml-hero-blurb">{book.data.blurb}</p>
               <div class="ml-hero-actions">
                 {book.data.buyLinks?.amazon ? (

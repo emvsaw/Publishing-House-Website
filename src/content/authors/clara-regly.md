@@ -23,5 +23,4 @@ freeBook:
 comingSoon:
   title: "The Havana Testament"
   cover: "/images/covers-optimized/clara-regly/the-havana-testament.jpg"
-  blurb: "Havana, 1926. The record is genuine. The permission is the forgery. Toni von Treuenfels takes on the most personal authentication of her career, in a city that keeps its own ledgers. Book 3 of The Authenticator."
----
+  blurb: "Havana, 1926. The paintings are genuine. The silver is genuine. The papers that say the family owns them are not. And a pianist Toni has never stopped thinking about is about to walk back into her life."

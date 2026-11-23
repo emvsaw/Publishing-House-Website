@@ -48,6 +48,7 @@ const books = defineCollection({
     genre: z.string(),
     cover: z.string(),
     blurb: z.string(),
+    tagline: z.string().optional(),
     releaseDate: z.string(),
     readingOrder: z.number().optional(),
     buyLinks: z.object({

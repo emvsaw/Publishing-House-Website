@@ -3,7 +3,8 @@ title: "The Nabataean Grave"
 authorSlug: clara-regly
 genre: Historical Mystery
 cover: "/images/covers-optimized/clara-regly/the-nabataean-grave.jpg"
-blurb: "Petra, 1925. Called to authenticate a find from the rose-red city, Toni von Treuenfels walks into a desert where the dead keep better records than the living, and someone is rewriting them. Book 2 of The Authenticator."
+blurb: "Petra, 1925. A fall from the cliffs, a case the British have already closed, and a letter addressed to Toni's late father. The deeper she digs, the closer the theft runs to her own family's name."
+tagline: "Rose-red stone, desert stars, and a dead man with two names."
 releaseDate: "2026-07-01"
 featured: false
 ---
