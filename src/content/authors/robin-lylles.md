@@ -6,8 +6,7 @@ photo: "/images/authors/robin-lylles.jpg"
 genres:
   - Cozy Mystery
 socialLinks:
-  amazon: "https://amazon.com/author/robinlylles"
-  goodreads: "https://goodreads.com/robinlylles"
+  website: "https://redwoodbaypress.com"
 newsletterFormAction: "https://BookHip.com/WPRTMZJ"
 freeBook:
   title: "The Villa's Last Guest"

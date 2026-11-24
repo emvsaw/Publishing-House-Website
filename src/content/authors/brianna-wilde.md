@@ -6,6 +6,8 @@ photo: "/images/authors/brianna-wilde.jpg"
 genres:
   - Dark Romance
   - Mafia Romance
+socialLinks:
+  website: "https://redwoodbaypress.com"
 newsletterFormAction: "https://dl.bookfunnel.com/eos73cu24c"
 freeBook:
   title: "Rule Number Four"

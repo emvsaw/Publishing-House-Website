@@ -6,8 +6,7 @@ photo: "/images/authors/clara-regly.jpg"
 genres:
   - Historical Mystery
 socialLinks:
-  amazon: "https://amazon.com/author/celiajoly"
-  goodreads: "https://goodreads.com/celiajoly"
+  website: "https://redwoodbaypress.com"
 newsletterFormAction: "https://BookHip.com/GRJZZWN"
 freeBook:
   title: "A Dog of No Provenance"
