@@ -3,7 +3,7 @@ title: "Sails & Secrets"
 authorSlug: robin-lylles
 genre: Cozy Mystery
 cover: "/images/covers-optimized/robin-lylles/sails-and-secrets.jpg"
-blurb: "In Calablanca, even the alibis come with a sea view. When an investor is found murdered aboard his yacht during regatta week, suspicion falls on Daniel—the man Goya Winters Sánchez is finally allowing herself to imagine a future with. Book 3 of the Calablanca Cozy Mysteries."
+blurb: "In Calablanca, even the alibis come with a sea view. When an investor is found dead aboard his yacht during regatta week, suspicion falls on the one man Goya refuses to doubt. Book 3 of the Calablanca Cozy Mysteries."
 releaseDate: "2026-10-01"
 readingOrder: 3
 featured: false
@@ -11,14 +11,12 @@ featured: false
 
 **In Calablanca, even the alibis come with a sea view.**
 
-Regatta week has filled the harbour with beautiful boats and people accustomed to getting their own way. Goya Winters Sánchez is happy to offer the latter clean towels. Anything beyond that is negotiable.
+Regatta week fills the harbor with yachts, money, and people used to getting their own way. Then an investor is found dead aboard his yacht, and suspicion falls on the one man Goya refuses to doubt: Daniel.
 
-Then an investor is found murdered aboard his yacht, and an earlier argument draws suspicion toward Daniel—the man Goya is finally allowing herself to imagine a future with.
+They're on the same side of the fight over Calablanca's coast. They just can't agree on how to win it. Now Goya must clear him before the village's divided loyalties cost them everything, while a painting her aunt never explained begins to tell its own story.
 
-Goya has questions of her own. The dead man was involved in a development that could change the coastline she now calls home. His associates have fortunes to protect, the village has grievances to spare, and someone's account of the morning is a little too tidy.
-
-As Goya follows the gaps, a painting at Casa Esperanza begins to reveal another side of her late aunt—a private life that makes Goya reconsider what she wants from her own.
-
-But first, she must work out who had a reason to board that yacht—and who has been counting on everyone looking out to sea.
-
-*A seaside cozy mystery bringing murder, village loyalties, and a late-blooming love story to a satisfying trilogy finale.*
+- Lovers who can disagree without falling apart (clean and closed-door)
+- A harbor whodunit during regatta week
+- A wrongly suspected partner, and a heroine determined to clear him
+- An aunt's hidden past
+- The finale of the Calablanca trilogy
