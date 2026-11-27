@@ -108,6 +108,9 @@ const fullCatalog = [...books].sort((a, b) =>
             {author.genres.map(g => <span class="tag">{g}</span>)}
           </div>
           <p class="bio-text">{author.bio}</p>
+          {author.socialLinks?.goodreads && (
+            <p><a href={author.socialLinks.goodreads} class="vr-release-link" target="_blank" rel="noopener">Follow {author.name} on Goodreads</a></p>
+          )}
         </div>
       </div>
     </div>

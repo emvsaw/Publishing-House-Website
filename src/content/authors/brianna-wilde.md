@@ -8,6 +8,7 @@ genres:
   - Mafia Romance
 socialLinks:
   website: "https://redwoodbaypress.com"
+  goodreads: "https://www.goodreads.com/author/show/73884649.Brianna_Wilde"
 newsletterFormAction: "https://dl.bookfunnel.com/eos73cu24c"
 freeBook:
   title: "Rule Number Four"

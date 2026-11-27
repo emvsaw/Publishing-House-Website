@@ -13,12 +13,16 @@ const {
 
 const siteUrl = 'https://redwoodbaypress.com';
 const canonicalUrl = new URL(Astro.url.pathname, siteUrl).toString();
+const isHomePage = Astro.url.pathname === '/';
+const facebookUrl = 'https://www.facebook.com/profile.php?id=61596860813842';
+const instagramUrl = 'https://www.instagram.com/redwoodbaypress/';
 const defaultStructuredData = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: 'Redwood Bay Press',
   url: siteUrl,
   logo: `${siteUrl}/images/logo.svg`,
+  sameAs: [facebookUrl, instagramUrl],
 };
 const schema = structuredData ?? defaultStructuredData;
 
@@ -71,6 +75,12 @@ import '../styles/global.css';
       <div class="footer-inner">
         <p>&copy; Redwood Bay Press. All rights reserved.</p>
         <div class="footer-links">
+          {isHomePage && (
+            <>
+              <a href={facebookUrl} target="_blank" rel="noopener">Facebook</a>
+              <a href={instagramUrl} target="_blank" rel="noopener">Instagram</a>
+            </>
+          )}
           <a href="/privacy">Privacy</a>
           <a href="/terms">Terms</a>
         </div>
