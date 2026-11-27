@@ -516,6 +516,16 @@ h4 { font-size: 1.25rem; }
 }
 .footer-links a:hover { color: var(--color-accent); }
 
+.footer-links .footer-social {
+  display: inline-block;
+  vertical-align: middle;
+}
+.footer-social svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+
 /* ── Author detail page ── */
 .author-hero {
   display: flex;
